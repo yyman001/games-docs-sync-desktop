@@ -5,6 +5,9 @@ const ipcHandle = () => window.electron.ipcRenderer.send('ping')
 </script>
 
 <template>
+ <div class="example bg-blue-500 p-4">
+    Hello, SCSS and Tailwind!
+  </div>
   <img alt="logo" class="logo" src="./assets/electron.svg" />
   <div class="creator">Powered by electron-vite</div>
   <div class="text">
@@ -24,3 +27,10 @@ const ipcHandle = () => window.electron.ipcRenderer.send('ping')
   </div>
   <Versions />
 </template>
+
+<style lang="scss">
+$primary-color: #fff; // 蓝色
+.example {
+  color: $primary-color;
+}
+</style>
