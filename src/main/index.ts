@@ -1,7 +1,12 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, BrowserWindow, ipcMain, dialog } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import { getLocalBackupFile } from '../renderer/src/utils/tools'
+
+const modules = {
+  dialog
+}
 
 function createWindow(): void {
   // Create the browser window.
@@ -9,7 +14,7 @@ function createWindow(): void {
     width: 1000,
     height: 800,
     show: false,
-    autoHideMenuBar: true, // 菜单条
+    autoHideMenuBar: false, // 菜单条
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
@@ -53,6 +58,37 @@ app.whenReady().then(() => {
 
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
+  // IPC 处理node操作请求
+  ipcMain.on('node-api', async (event, data) => {
+    console.log('node-api:data', data)
+
+    let result
+    try {
+      if (data.fn === 'getLocalBackupFile') {
+        result = await getLocalBackupFile(data.path)
+      }
+      event.reply('file-operation-result', result) // 发送结果回渲染进程
+    } catch (error) {
+      event.reply('file-operation-error', error) // 发送错误回渲染进程
+    }
+  })
+
+  ipcMain.handle('ipc', async (_event, argument: any[]) => {
+    const [parameter] = argument
+    const { modName, functionName, data } = parameter as IpcParameter
+    console.log(modName, functionName, data)
+
+    // 动态调用指定模块的函数
+    if (modName && functionName && modules[modName]) {
+      const module = modules[modName]
+      if (typeof module[functionName] === 'function') {
+        const result = await module[functionName](data) // 调用指定函数
+        return result
+      }
+    }
+
+    return null
+  })
 
   createWindow()
 

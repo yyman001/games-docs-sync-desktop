@@ -6,3 +6,11 @@ declare module '*.vue' {
   const component: DefineComponent<{}, {}, any>
   export default component
 }
+
+// 声明 electron 类型
+interface Window {
+  electron: {
+    ipcRenderer: any; // 根据实际类型进行调整
+  };
+}
+
