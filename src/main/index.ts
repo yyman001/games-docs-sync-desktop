@@ -1,11 +1,14 @@
-import { app, BrowserWindow, ipcMain, dialog } from 'electron'
+import { app, BrowserWindow, ipcMain, dialog, shell } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { getLocalBackupFile } from '../renderer/src/utils/tools'
+import { cwd } from 'process'
 
+const APP_HOME_DIR = cwd()
 const modules = {
-  dialog
+  dialog,
+  shell
 }
 
 function createWindow(): void {
@@ -59,23 +62,19 @@ app.whenReady().then(() => {
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
   // IPC 处理node操作请求
-  ipcMain.on('node-api', async (event, data) => {
+  ipcMain.handle('nodeApi', async (event, data) => {
     console.log('node-api:data', data)
-
-    let result
     try {
       if (data.fn === 'getLocalBackupFile') {
-        result = await getLocalBackupFile(data.path)
+        return await getLocalBackupFile(data.path)
       }
-      event.reply('file-operation-result', result) // 发送结果回渲染进程
     } catch (error) {
-      event.reply('file-operation-error', error) // 发送错误回渲染进程
+      return error
     }
   })
 
-  ipcMain.handle('ipc', async (_event, argument: any[]) => {
-    const [parameter] = argument
-    const { modName, functionName, data } = parameter as IpcParameter
+  ipcMain.handle('ipcAsync', async (_event, argument: any) => {
+    const { modName, functionName, data } = argument as IpcParameter
     console.log(modName, functionName, data)
 
     // 动态调用指定模块的函数
@@ -88,6 +87,31 @@ app.whenReady().then(() => {
     }
 
     return null
+  })
+
+  // 同步
+  ipcMain.on('ipcSync', (event, argument: any) => {
+    const { modName, functionName, data } = argument as IpcParameter
+    console.log('ipcSync:', modName, functionName, data)
+
+    // 动态调用指定模块的函数
+    if (modName && functionName && modules[modName]) {
+      const module = modules[modName]
+      if (typeof module[functionName] === 'function') {
+        const result = module[functionName](data) // 调用指定函数
+        event.returnValue = result
+      }
+    }
+
+    event.returnValue = null
+  })
+
+  ipcMain.on('sync', (event, params: any) => {
+    // 检查 params 是否是数组
+    if (!Array.isArray(params)) {
+      params = [params] // 如果不是数组，将其转换为数组
+    }
+    event.returnValue = join(APP_HOME_DIR, ...params) // 通过 returnValue 返回给渲染进程
   })
 
   createWindow()

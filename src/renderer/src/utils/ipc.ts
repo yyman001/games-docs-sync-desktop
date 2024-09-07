@@ -1,22 +1,3 @@
-// 渲染进程代码示例
-const ipcRenderer = window.electron.ipcRenderer
-// 发送文件操作请求
-export async function callNodeApi(data: any) {
-  ipcRenderer.send('node-api', data)
-
-  return new Promise((resolve, reject) => {
-    // 监听结果
-    ipcRenderer.on('file-operation-result', (event, result) => {
-      resolve(result) // 处理成功结果
-    })
-
-    // 监听错误
-    ipcRenderer.on('file-operation-error', (event, error) => {
-      reject(error) // 处理错误
-    })
-  })
-}
-
 export interface IpcParameter {
   // 调用模块名
   modName?: string
@@ -30,6 +11,14 @@ export interface dialogParameter {
   title?: string
   // 打开文件类型, 空则打开"文件夹"
   openFileType?: string
+}
+
+// 渲染进程代码示例
+const ipcRenderer = window.electron.ipcRenderer
+// 发送文件操作请求
+export async function callNodeApi(data: any) {
+  const rtx = await ipcRenderer.invoke('nodeApi', data)
+  return rtx
 }
 
 // api: https://www.electronjs.org/zh/docs/latest/api/dialog#dialogshowopendialogbrowserwindow-options
@@ -49,9 +38,17 @@ export const showOpenDialog = async ({ title = '', openFileType = '' } = {} as d
     properties = ['openDirectory']
   }
 
-  const { canceled, filePaths } = await ipcRenderer.invoke('ipc', [
-    { modName: 'dialog', functionName: 'showOpenDialog', data: { title, properties, filters } }
-  ])
+  const { canceled, filePaths } = await ipcRenderer.invoke('ipcAsync', {
+    modName: 'dialog',
+    functionName: 'showOpenDialog',
+    data: { title, properties, filters }
+  })
   if (canceled) return ''
   return filePaths.pop()
+}
+
+// 发送同步消息，并等待主进程返回结果
+export function getPath(relativePath) {
+  const result = ipcRenderer.sendSync('sync', relativePath)
+  console.log('Resolved Path:', result)
 }
