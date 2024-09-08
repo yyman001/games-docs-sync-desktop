@@ -51,4 +51,5 @@ export const showOpenDialog = async ({ title = '', openFileType = '' } = {} as d
 export function getPath(relativePath) {
   const result = ipcRenderer.sendSync('sync', relativePath)
   console.log('Resolved Path:', result)
+  return result
 }
