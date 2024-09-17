@@ -21,6 +21,24 @@ export async function callNodeApi(data: any) {
   return rtx
 }
 
+export function callNodesync(data: IpcParameter) {
+  const rtx = ipcRenderer.sendSync('ipcSync', data)
+  return rtx
+}
+export async function callNodeAsync(data: IpcParameter) {
+  // 判断数据是否可克隆
+  const isCloneable = (obj) => {
+    return obj && (typeof obj === 'object' || Array.isArray(obj)) && !(obj instanceof Date);
+  };
+
+  if (!isCloneable(data)) {
+    throw new Error("数据不可克隆");
+  }
+  const clonedData = JSON.parse(JSON.stringify(data));
+  const rtx = await ipcRenderer.invoke('ipcAsync', clonedData)
+  return rtx
+}
+
 // api: https://www.electronjs.org/zh/docs/latest/api/dialog#dialogshowopendialogbrowserwindow-options
 export const showOpenDialog = async ({ title = '', openFileType = '' } = {} as dialogParameter) => {
   let filters

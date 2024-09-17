@@ -4,11 +4,13 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { getLocalBackupFile } from '../renderer/src/utils/tools'
 import { cwd } from 'process'
+import * as file from '../renderer/src/utils/FileClass'
 
 const APP_HOME_DIR = cwd()
 const modules = {
   dialog,
-  shell
+  shell,
+  file
 }
 
 function createWindow(): void {
@@ -79,7 +81,11 @@ app.whenReady().then(() => {
 
   ipcMain.handle('ipcAsync', async (_event, argument: any) => {
     const { modName, functionName, data } = argument as IpcParameter
-    console.log(modName, functionName, data)
+    console.log('ipcAsync:',modName, functionName, data)
+    console.log('data type:',typeof data);
+
+    const { filePath, fileBuffer } = data
+    console.log('filePath, fileBuffer', filePath, fileBuffer);
 
     // 动态调用指定模块的函数
     if (modName && functionName && modules[modName]) {
