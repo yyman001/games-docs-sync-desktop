@@ -5,12 +5,14 @@ import icon from '../../resources/icon.png?asset'
 import { getLocalBackupFile } from '../renderer/src/utils/tools'
 import { cwd } from 'process'
 import * as file from '../renderer/src/utils/FileClass'
+import { localGamesDocDatabase } from '../renderer/src/utils/node/sqlite'
 
 const APP_HOME_DIR = cwd()
 const modules = {
   dialog,
   shell,
-  file
+  file,
+  localGamesDocDatabase
 }
 
 function createWindow(): void {
@@ -83,16 +85,13 @@ app.whenReady().then(() => {
 
   ipcMain.handle('ipcAsync', async (_event, argument: any) => {
     const { modName, functionName, data } = argument as IpcParameter
-    console.log('ipcAsync:',modName, functionName, data)
-    console.log('data type:',typeof data);
-
-    const { filePath, fileBuffer } = data
-    console.log('filePath, fileBuffer', filePath, fileBuffer);
+    console.log('ipcAsync:', modName, functionName, data)
+    console.log('data type:', typeof data)
 
     // 动态调用指定模块的函数
     if (modName && functionName && modules[modName]) {
       const module = modules[modName]
-      if (typeof module[functionName] === 'function') {
+      if (typeof module[functionName] === 'function' && data) {
         const result = await module[functionName](data) // 调用指定函数
         return result
       }
@@ -109,7 +108,7 @@ app.whenReady().then(() => {
     // 动态调用指定模块的函数
     if (modName && functionName && modules[modName]) {
       const module = modules[modName]
-      if (typeof module[functionName] === 'function') {
+      if (typeof module[functionName] === 'function' && data) {
         const result = module[functionName](data) // 调用指定函数
         event.returnValue = result
       }
