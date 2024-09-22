@@ -43,7 +43,7 @@ const {
 } = useCloudStoreWhitOut()
 const useConfigStore = useConfigStoreWhitOut()
 const { setDefaultTempPath, setDefaultBackPath, setDefalutConfigPath } = useConfigStore
-const { tempPath, backPath, configFilePath } = storeToRefs(useConfigStore)
+const { tempPath, backupPath, configFilePath } = storeToRefs(useConfigStore)
 const setCustomBackPath = async () => {
   const openPath = await showOpenDialog()
   if (openPath) {
@@ -59,152 +59,167 @@ const setCustomTempPath = async () => {
 </script>
 
 <template>
-  <ScrollArea class="w-full h-full p-4 border rounded-md config-page bg-slate-100">
-    <template v-for="{ value, name } in tabs" :key="value">
-      <Card class="mb-4">
-        <CardHeader>
-          <CardTitle>{{ name }}</CardTitle>
-          <CardDescription v-if="value === 'backup'">默认操作目录在主应用目录下</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <template v-if="value === 'base'"> <a-checkbox> 随开机启动 </a-checkbox> </template>
-          <template v-else-if="value === 'backup'">
-            <field-set-group title="临时操作路径">
-              <div style="margin-bottom: 16px">
-                <a-input :value="tempPath">
-                  <template #addonBefore>
-                    <a-tooltip title="设置临时操作目录">
-                      <SettingOutlined @click="setCustomTempPath" />
-                    </a-tooltip>
-                  </template>
+  <div class="grid grid-rows-[auto, 1fr] h-screen w-full relative">
+    <header class="p-4">
+      <h2 class="text-2xl font-bold text-black">配置</h2>
+    </header>
+    <main class="p-4 overflow-hidden bg-gray-100">
+      <ScrollArea class="w-full h-full border rounded-md config-page bg-slate-100">
+        <template v-for="{ value, name } in tabs" :key="value">
+          <Card class="mb-4">
+            <CardHeader>
+              <CardTitle>{{ name }}</CardTitle>
+              <CardDescription v-if="value === 'backup'"
+                >默认操作目录在主应用目录下</CardDescription
+              >
+            </CardHeader>
+            <CardContent>
+              <template v-if="value === 'base'"> <a-checkbox disabled> 随开机启动 </a-checkbox> </template>
+              <template v-else-if="value === 'backup'">
+                <field-set-group title="临时操作路径">
+                  <div style="margin-bottom: 16px">
+                    <a-input :value="tempPath">
+                      <template #addonBefore>
+                        <a-tooltip title="设置临时操作目录">
+                          <SettingOutlined @click="setCustomTempPath" />
+                        </a-tooltip>
+                      </template>
 
-                  <template #addonAfter>
-                    <a-tooltip title="恢复默认">
-                      <ReloadOutlined @click="setDefaultTempPath" />
-                    </a-tooltip>
-                  </template>
-                </a-input>
-              </div>
-            </field-set-group>
-
-            <field-set-group title="备份路径">
-              <div style="margin-bottom: 16px">
-                <a-input :value="backPath">
-                  <template #addonBefore>
-                    <a-tooltip title="设置备份目录">
-                      <SettingOutlined @click="setCustomBackPath" />
-                    </a-tooltip>
-                  </template>
-
-                  <template #addonAfter>
-                    <a-tooltip title="恢复默认">
-                      <ReloadOutlined @click="setDefaultBackPath" />
-                    </a-tooltip>
-                  </template>
-                </a-input>
-              </div> </field-set-group
-          ></template>
-          <template v-else-if="value === 'cloud'">
-            <field-set-group title="云配置">
-              <div>
-                <a-input :value="configFilePath" style="margin-bottom: 16px">
-                  <template #addonBefore>
-                    <a-tooltip title="导入配置">
-                      <SettingOutlined @click="handleSetConfig(configFilePath)" />
-                    </a-tooltip>
-                  </template>
-                  <template #addonAfter>
-                    <a-tooltip title="恢复默认" @click="setDefalutConfigPath">
-                      <RedoOutlined />
-                    </a-tooltip>
-                  </template>
-                </a-input>
-                <a-button type="primary" @click="loadConfig(configFilePath)">重新载入配置</a-button>
-                <a-divider />
-
-                <field-set-group title="账号设置">
-                  <div class="colud-type" style="margin-bottom: 16px">
-                    云盘类型:
-                    <a-select
-                      style="width: 100px"
-                      size="small"
-                      :value="cloudType"
-                      :options="cloudTypeList"
-                      @change="onSwitchCloud"
-                    ></a-select>
+                      <template #addonAfter>
+                        <a-tooltip title="恢复默认">
+                          <ReloadOutlined @click="setDefaultTempPath" />
+                        </a-tooltip>
+                      </template>
+                    </a-input>
                   </div>
-                  <a-form
-                    :model="cloudAccountConfig"
-                    name="basic"
-                    :label-col="{ span: 8 }"
-                    :wrapper-col="{ span: 16 }"
-                    autocomplete="off"
-                  >
-                    <template v-if="cloudType === 'ali-oss'">
-                      <a-form-item
-                        label="AccessKeyId"
-                        name="accessKeyId"
-                        :rules="[{ required: true, message: 'Please input your accessKeyId!' }]"
-                      >
-                        <a-input v-model:value="cloudAccountConfig.aliOss.accessKeyId" />
-                      </a-form-item>
-
-                      <a-form-item
-                        label="AccessKeySecret"
-                        name="accessKeySecret"
-                        :rules="[{ required: true, message: 'Please input your accessKeySecret!' }]"
-                      >
-                        <a-input v-model:value="cloudAccountConfig.aliOss.accessKeySecret" />
-                      </a-form-item>
-
-                      <a-form-item
-                        label="Bucket"
-                        name="bucket"
-                        :rules="[{ required: true, message: 'Please input your bucket!' }]"
-                      >
-                        <a-input v-model:value="cloudAccountConfig.aliOss.bucket" />
-                      </a-form-item>
-                    </template>
-
-                    <template v-if="cloudType === 'jianguoyun'">
-                      <!-- 账号 -->
-                      <a-form-item>
-                        <a-input
-                          placeholder="账号"
-                          v-model:value="cloudAccountConfig.jianguoyun.usearname"
-                        >
-                          <template #addonBefore>
-                            <UserOutlined />
-                          </template>
-                        </a-input>
-                      </a-form-item>
-                      <!-- 密码 -->
-                      <a-form-item>
-                        <a-input-password
-                          type="password"
-                          placeholder="密码"
-                          v-model:value="cloudAccountConfig.jianguoyun.password"
-                        >
-                          <template #addonBefore>
-                            <LockOutlined />
-                          </template>
-                        </a-input-password>
-                      </a-form-item>
-                    </template>
-
-                    <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
-                      <a-button type="primary" @click="handleSave(configFilePath)">保存</a-button>
-                    </a-form-item>
-                  </a-form>
                 </field-set-group>
-              </div>
-            </field-set-group></template
-          >
-          <template v-else-if="value === 'about'"> 这是一个免费开源程序 </template>
-        </CardContent>
-      </Card>
-    </template>
-  </ScrollArea>
+
+                <field-set-group title="备份路径">
+                  <div style="margin-bottom: 16px">
+                    <a-input :value="backupPath">
+                      <template #addonBefore>
+                        <a-tooltip title="设置备份目录">
+                          <SettingOutlined @click="setCustomBackPath" />
+                        </a-tooltip>
+                      </template>
+
+                      <template #addonAfter>
+                        <a-tooltip title="恢复默认">
+                          <ReloadOutlined @click="setDefaultBackPath" />
+                        </a-tooltip>
+                      </template>
+                    </a-input>
+                  </div> </field-set-group
+              ></template>
+              <template v-else-if="value === 'cloud'">
+                <field-set-group title="云配置">
+                  <div>
+                    <a-input :value="configFilePath" style="margin-bottom: 16px">
+                      <template #addonBefore>
+                        <a-tooltip title="导入配置">
+                          <SettingOutlined @click="handleSetConfig(configFilePath)" />
+                        </a-tooltip>
+                      </template>
+                      <template #addonAfter>
+                        <a-tooltip title="恢复默认" @click="setDefalutConfigPath">
+                          <RedoOutlined />
+                        </a-tooltip>
+                      </template>
+                    </a-input>
+                    <a-button type="primary" @click="loadConfig(configFilePath)"
+                      >重新载入配置</a-button
+                    >
+                    <a-divider />
+
+                    <field-set-group title="账号设置">
+                      <div class="colud-type" style="margin-bottom: 16px">
+                        云盘类型:
+                        <a-select
+                          style="width: 100px"
+                          size="small"
+                          :value="cloudType"
+                          :options="cloudTypeList"
+                          @change="onSwitchCloud"
+                        ></a-select>
+                      </div>
+                      <a-form
+                        :model="cloudAccountConfig"
+                        name="basic"
+                        :label-col="{ span: 8 }"
+                        :wrapper-col="{ span: 16 }"
+                        autocomplete="off"
+                      >
+                        <template v-if="cloudType === 'ali-oss'">
+                          <a-form-item
+                            label="AccessKeyId"
+                            name="accessKeyId"
+                            :rules="[{ required: true, message: 'Please input your accessKeyId!' }]"
+                          >
+                            <a-input v-model:value="cloudAccountConfig.aliOss.accessKeyId" />
+                          </a-form-item>
+
+                          <a-form-item
+                            label="AccessKeySecret"
+                            name="accessKeySecret"
+                            :rules="[
+                              { required: true, message: 'Please input your accessKeySecret!' }
+                            ]"
+                          >
+                            <a-input v-model:value="cloudAccountConfig.aliOss.accessKeySecret" />
+                          </a-form-item>
+
+                          <a-form-item
+                            label="Bucket"
+                            name="bucket"
+                            :rules="[{ required: true, message: 'Please input your bucket!' }]"
+                          >
+                            <a-input v-model:value="cloudAccountConfig.aliOss.bucket" />
+                          </a-form-item>
+                        </template>
+
+                        <template v-if="cloudType === 'jianguoyun'">
+                          <!-- 账号 -->
+                          <a-form-item>
+                            <a-input
+                              placeholder="账号"
+                              v-model:value="cloudAccountConfig.jianguoyun.usearname"
+                            >
+                              <template #addonBefore>
+                                <UserOutlined />
+                              </template>
+                            </a-input>
+                          </a-form-item>
+                          <!-- 密码 -->
+                          <a-form-item>
+                            <a-input-password
+                              type="password"
+                              placeholder="密码"
+                              v-model:value="cloudAccountConfig.jianguoyun.password"
+                            >
+                              <template #addonBefore>
+                                <LockOutlined />
+                              </template>
+                            </a-input-password>
+                          </a-form-item>
+                        </template>
+
+                        <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
+                          <a-button type="primary" @click="handleSave(configFilePath)"
+                            >保存</a-button
+                          >
+                        </a-form-item>
+                      </a-form>
+                    </field-set-group>
+                  </div>
+                </field-set-group></template
+              >
+              <template v-else-if="value === 'about'"> 这是一个免费开源程序 </template>
+            </CardContent>
+          </Card>
+        </template>
+      </ScrollArea>
+    </main>
+  </div>
 </template>
 
 <style></style>

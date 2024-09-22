@@ -2,7 +2,7 @@ import { app, BrowserWindow, ipcMain, dialog, shell } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import { getLocalBackupFile } from '../renderer/src/utils/tools'
+import * as scan from '../renderer/src/utils/tools'
 import { cwd } from 'process'
 import * as file from '../renderer/src/utils/FileClass'
 import { localGamesDocDatabase } from '../renderer/src/utils/node/sqlite'
@@ -12,6 +12,7 @@ const modules = {
   dialog,
   shell,
   file,
+  scan,
   localGamesDocDatabase
 }
 
@@ -72,17 +73,6 @@ app.whenReady().then(() => {
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
   // IPC 处理node操作请求
-  ipcMain.handle('nodeApi', async (event, data) => {
-    console.log('node-api:data', data)
-    try {
-      if (data.fn === 'getLocalBackupFile') {
-        return await getLocalBackupFile(data.path)
-      }
-    } catch (error) {
-      return error
-    }
-  })
-
   ipcMain.handle('ipcAsync', async (_event, argument: any) => {
     const { modName, functionName, data } = argument as IpcParameter
     console.log('ipcAsync:', modName, functionName, data)

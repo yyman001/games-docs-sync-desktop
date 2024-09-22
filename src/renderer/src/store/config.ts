@@ -4,7 +4,7 @@ import { useCloudStoreWhitOut } from '@/store/cloud'
 import { getPath } from '@/utils/ipc'
 
 enum LOCAL_CONFIG {
-  DEFAULT_BACK_PATH = 'back',
+  DEFAULT_BACK_PATH = 'backup',
   DEFAULT_TEMP_PATH = 'temp',
   CUSTOM_TEMP_PATH = '_custom_temp_path',
   CUSTOM_BACK_PATH = '_custom_back_path',
@@ -37,11 +37,11 @@ export const useConfigStore = defineStore('config', () => {
   }
 
   /* 文件备份目录 */
-  const backPath = ref('')
+  const backupPath = ref('')
   const setBackPath = (path: string) => {
     console.log('setBackPath', path)
 
-    backPath.value = path
+    backupPath.value = path
     setLocalStorageItem(LOCAL_CONFIG.DEFAULT_BACK_PATH, path)
   }
   // 改名为恢复默认路径
@@ -52,7 +52,7 @@ export const useConfigStore = defineStore('config', () => {
     setBackPath(path)
   }
   const getBackupPath = (...param: any) => {
-    return getPath(unref(backPath), ...param)
+    return getPath(unref(backupPath), ...param)
   }
 
   /* 配置文件 */
@@ -114,7 +114,7 @@ export const useConfigStore = defineStore('config', () => {
     getTempPath,
     setDefaultTempPath,
 
-    backPath,
+    backupPath,
     setBackPath,
     getBackupPath,
     setDefaultBackPath,
