@@ -4,10 +4,11 @@ import { cwd } from 'process'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import * as scan from '../renderer/src/utils/tools'
-import * as file from '../renderer/src/utils/FileClass'
+import * as file from '../renderer/src/utils/node/FileClass'
 import { localGamesDocDatabase } from '../renderer/src/utils/node/sqlite'
 import * as tree from "../renderer/src/utils/node/scanFileTree"
 import * as path from '../renderer/src/utils/node/path'
+import * as backup from '../renderer/src/utils/node/backup'
 
 const APP_HOME_DIR = cwd()
 const modules = {
@@ -17,7 +18,8 @@ const modules = {
   scan,
   localGamesDocDatabase,
   tree,
-  path
+  path,
+  backup
 }
 
 function createWindow(): void {

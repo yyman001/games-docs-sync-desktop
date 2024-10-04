@@ -3,11 +3,11 @@ import { cwd } from 'process'
 import useSystem from './useSystem'
 const APP_HOME_DIR = cwd()
 const { HOME_DIR } = useSystem()
-export const getAppPath = (...params: any) => {
+export const getAppPath = (...params: string[]) => {
   return join(APP_HOME_DIR, ...params)
 }
 
-export const getPath = (params: any) => {
+export const getPath = (params: string[]) => {
   return join.apply(null, params)
 }
 

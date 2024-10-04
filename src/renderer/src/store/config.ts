@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref, unref, watch } from 'vue'
 import { useCloudStoreWhitOut } from '@/store/cloud'
-import { getPath } from '@/utils/ipc'
+// getPath 是以当前应用目录为基础
+import { getPath, callNodesync } from '@/utils/ipc'
 
 enum LOCAL_CONFIG {
   DEFAULT_BACK_PATH = 'backup',
@@ -33,7 +34,11 @@ export const useConfigStore = defineStore('config', () => {
     setTempPath(getPath(LOCAL_CONFIG.DEFAULT_TEMP_PATH))
   }
   const getTempPath = (...param: any) => {
-    return getPath(unref(tempPath), ...param)
+    return callNodesync({
+      modName: 'path',
+      functionName: 'getPath',
+      data: [unref(tempPath), ...param]
+    })
   }
 
   /* 文件备份目录 */

@@ -30,10 +30,13 @@ export const modal = Symbol('')
 export interface BackModal extends Modal {
   loading?: boolean
   selectedKeys: string[]
-  treeData: TreeItem[],
-  nodeSize: number,
+  treeData: TreeItem[]
+  nodeSize: number
   docPath: string
   backPath: string
+  GAME_DOC_DIR: string // 游戏目录名
+  GAME_DOC_PATH: string // 游戏存档路径
+  GAME_FILES_BACKUP_PATH: string // 备份文件路径
 }
 
 export interface RestoreModal extends Modal {

@@ -69,9 +69,15 @@ const handleClickCard = ([appStatus, item]: CardEmitItem) => {
         return
       }
 
+      const backupGameDocFullPath = callNodesync({
+        modName: 'path',
+        functionName: 'getPath',
+        data: [backupPath.value, item.gameDocDir]
+      })
+
       GAME_DOC_DIR.value = item.gameDocDir
       GAME_DOC_PATH.value = gameDocFullPath
-      GAME_FILES_BACKUP_PATH.value = backupPath.value
+      GAME_FILES_BACKUP_PATH.value = backupGameDocFullPath
       onModalOpen()
       return
     case 'restore':

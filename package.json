@@ -30,6 +30,7 @@
     "better-sqlite3": "^11.2.1",
     "change-case": "^5.4.4",
     "class-variance-authority": "^0.7.0",
+    "compressing": "^1.10.1",
     "dayjs": "^1.11.13",
     "dexie": "^4.0.8",
     "electron-updater": "^6.1.7",
