@@ -1,11 +1,13 @@
 import { app, BrowserWindow, ipcMain, dialog, shell } from 'electron'
 import { join } from 'path'
+import { cwd } from 'process'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import * as scan from '../renderer/src/utils/tools'
-import { cwd } from 'process'
 import * as file from '../renderer/src/utils/FileClass'
 import { localGamesDocDatabase } from '../renderer/src/utils/node/sqlite'
+import * as tree from "../renderer/src/utils/node/scanFileTree"
+import * as path from '../renderer/src/utils/node/path'
 
 const APP_HOME_DIR = cwd()
 const modules = {
@@ -13,7 +15,9 @@ const modules = {
   shell,
   file,
   scan,
-  localGamesDocDatabase
+  localGamesDocDatabase,
+  tree,
+  path
 }
 
 function createWindow(): void {
@@ -94,6 +98,7 @@ app.whenReady().then(() => {
   ipcMain.on('ipcSync', (event, argument: any) => {
     const { modName, functionName, data } = argument as IpcParameter
     console.log('ipcSync:', modName, functionName, data)
+    console.log('data type:', typeof data);
 
     // 动态调用指定模块的函数
     if (modName && functionName && modules[modName]) {
@@ -101,6 +106,7 @@ app.whenReady().then(() => {
       if (typeof module[functionName] === 'function' && data) {
         const result = module[functionName](data) // 调用指定函数
         event.returnValue = result
+        console.log('ipcSync:result:', result);
       }
     }
 

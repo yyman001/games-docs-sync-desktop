@@ -1,6 +1,6 @@
 import { contextBridge } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-import useSystem from './useSystem'
+import useSystem from '../renderer/src/utils/node/useSystem'
 // Custom APIs for renderer
 const api = {}
 

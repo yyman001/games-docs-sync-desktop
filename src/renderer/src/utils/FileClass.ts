@@ -191,3 +191,31 @@ export async function remove(path: string) {
 
   return false
 }
+
+
+/**
+ * 异步检查路径是否存在
+ *
+ * 此函数使用await关键字等待文件系统操作完成，以检查指定路径是否存在
+ * 它委托给fs.pathExists方法，异步地检查路径是否存在
+ *
+ * @param path 要检查的路径字符串，可以是文件或目录路径
+ * @returns 返回一个Promise，解析为布尔值，指示路径是否存在
+ */
+export async function checkPathExistsAsync(path: string) {
+  return await fs.pathExists(path)
+}
+
+/**
+ * 同步检查文件路径是否存在
+ *
+ * 此函数用于检查给定的文件路径是否存在于文件系统中它使用fs.pathExistsSync方法，
+ * 提供了一个同步的方式 来检查路径是否存在这个函数在需要快速判断路径是否存在，
+ * 而又不想使用异步回调的情况下非常有用
+ *
+ * @param path {string} - 需要检查的文件路径
+ * @returns {boolean} - 返回一个布尔值，如果路径存在返回true，否则返回false
+ */
+export function checkPathExists(path: string) {
+  return fs.pathExistsSync(path)
+}

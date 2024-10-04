@@ -1,13 +1,24 @@
 <template>
-  <div class="card__wrap">
-    <div class="card" :class="cardStyle">
+  <div class="box-border relative overflow-hidden card__wrap">
+    <div class="relative card bg-slate-300" :class="cardStyle">
       <div
         class="card__head"
         :class="modeStyle"
         :style="{ backgroundImage: `url(${verticalCover(item.steamId)})` }"
       ></div>
-      <div class="card__body">
-        <div class="card__action backdrop-filter" :class="isActiveClass">
+      <div class="h-full card__body">
+        <div class="relative w-full h-full overflow-hidden group">
+          <!-- Upper Triangle -->
+          <div class="absolute w-full h-full transition-all duration-500 transform -translate-x-full bg-red-500 opacity-0 clip-upper-triangle group-hover:translate-x-0 group-hover:opacity-60 group-hover:border-red-500 group-hover:border group-hover:shadow-red-500/50 group-hover:shadow-md"></div>
+
+          <!-- Lower Triangle -->
+          <div class="absolute right-0 w-full h-full transition-all duration-500 transform translate-x-full bg-blue-500 opacity-0 clip-lower-triangle group-hover:translate-x-0 group-hover:opacity-50 group-hover:border-red-500 group-hover:border group-hover:shadow-red-500/50 group-hover:shadow-md"></div>
+
+          <div @click.stop="onClick('restore')" class="absolute text-5xl font-bold text-white transition-opacity duration-500 opacity-0 left-6 top-12 group-hover:opacity-100 ">还原</div>
+
+          <div @click.stop="onClick('backup')" class="absolute text-5xl font-bold text-white transition-opacity duration-500 opacity-0 right-6 bottom-12 group-hover:opacity-100 ">备份</div>
+        </div>
+        <!-- <div class="card__action backdrop-filter" :class="isActiveClass">
           <a class="card__run" :class="appRunStyle" title="运行" @click.stop="onClick('run')">
             <CloseOutlined
               v-if="isTargetGameDoc && appStatus !== 'unstart'"
@@ -22,19 +33,13 @@
             </div>
             <div class="info__text">总数: {{ generateTimeSummary(item.playtime || 0) }}</div>
           </div>
-        </div>
-        <!-- <div class="card__info">
-          <div class="card__label-time">
-            <span>备份时间:</span>
-            <i>{{ item.lastBackTime === null ? '无' : formatTimestamp(item.lastBackTime) }}</i>
-          </div>
         </div> -->
       </div>
 
-      <a class="card__editor" title="编辑" @click.stop="onClick('editor')"></a>
-      <a class="card__del" title="删除" @click.stop="onClick('del')"></a>
+      <!-- <a class="card__editor" title="编辑" @click.stop="onClick('editor')"></a>
+      <a class="card__del" title="删除" @click.stop="onClick('del')"></a> -->
 
-      <div class="card__buttons">
+      <!-- <div class="card__buttons">
         <a-button type="danger" size="small" @click.stop="onClick('restore')">还原</a-button>
         <a-button
           :disabled="!hasGameDoc"
@@ -43,9 +48,9 @@
           @click.stop="onClick('backup')"
           >备份</a-button
         >
-      </div>
+      </div> -->
     </div>
-    <div class="card-name ellipsis">{{ item.nickName }}</div>
+    <div class="card-name text-ellipsis">{{ item.nickName }}</div>
   </div>
 </template>
 
@@ -142,29 +147,26 @@ export default defineComponent({
 <style type="text/scss" lang="scss">
 // box-shadow-demo: https://getcssscan.com/css-box-shadow-examples
 .card {
-  &__wrap {
-    box-sizing: border-box;
-    position: relative;
-    padding: 0.2em;
-    overflow: hidden;
-  }
-
-  position: relative;
-  background-color: #ccc;
-  // overflow: hidden;
-
   &--border-shadow {
-    box-shadow: #fcfcfc 0px 0px 0px 2px, #141416 0px 0px 0px 4px,
-      rgba(6, 24, 44, 0.65) 0px 4px 6px -1px, rgba(255, 255, 255, 0.08) 0px 1px 0px inset;
+    box-shadow:
+      #fcfcfc 0px 0px 0px 2px,
+      #141416 0px 0px 0px 4px,
+      rgba(6, 24, 44, 0.65) 0px 4px 6px -1px,
+      rgba(255, 255, 255, 0.08) 0px 1px 0px inset;
   }
 
   &--border-shadow__empty {
-    box-shadow: #fcfcfc 0px 0px 0px 2px, #d9d9d9 0px 0px 0px 4px,
-      rgba(6, 24, 44, 0.65) 0px 4px 6px -1px, rgba(255, 255, 255, 0.08) 0px 1px 0px inset;
+    box-shadow:
+      #fcfcfc 0px 0px 0px 2px,
+      #d9d9d9 0px 0px 0px 4px,
+      rgba(6, 24, 44, 0.65) 0px 4px 6px -1px,
+      rgba(255, 255, 255, 0.08) 0px 1px 0px inset;
   }
 
   &--normal-shadow {
-    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+    box-shadow:
+      rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+      rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
   }
 
   // 无存档显示灰色图
@@ -238,7 +240,9 @@ export default defineComponent({
       left: 0;
       bottom: 0;
 
-      box-shadow: -1px -1px 5px -1px rgb(0 0 0 / 46%), 2px 2px 5px 0px rgb(0 0 0 / 46%);
+      box-shadow:
+        -1px -1px 5px -1px rgb(0 0 0 / 46%),
+        2px 2px 5px 0px rgb(0 0 0 / 46%);
     }
 
     // 未启动
@@ -380,5 +384,15 @@ export default defineComponent({
 .backdrop-filter {
   backdrop-filter: blur(10px);
   box-shadow: inset 0 0 75px -30px #e6f7ff;
+}
+
+/* Upper-left triangle */
+.clip-upper-triangle {
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+}
+
+/* Lower-right triangle */
+.clip-lower-triangle {
+  clip-path: polygon(100% 100%, 100% 0, 0 100%);
 }
 </style>

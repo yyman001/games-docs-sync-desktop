@@ -7,11 +7,13 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AAlert: typeof import('ant-design-vue/es')['Alert']
     AButton: typeof import('ant-design-vue/es')['Button']
     AButtonGroup: typeof import('ant-design-vue/es')['ButtonGroup']
     ACheckbox: typeof import('ant-design-vue/es')['Checkbox']
     ACheckboxGroup: typeof import('ant-design-vue/es')['CheckboxGroup']
     ACol: typeof import('ant-design-vue/es')['Col']
+    ADirectoryTree: typeof import('ant-design-vue/es')['DirectoryTree']
     ADivider: typeof import('ant-design-vue/es')['Divider']
     AForm: typeof import('ant-design-vue/es')['Form']
     AFormItem: typeof import('ant-design-vue/es')['FormItem']
@@ -22,6 +24,7 @@ declare module 'vue' {
     ALayoutFooter: typeof import('ant-design-vue/es')['LayoutFooter']
     ALayoutHeader: typeof import('ant-design-vue/es')['LayoutHeader']
     ALayoutSider: typeof import('ant-design-vue/es')['LayoutSider']
+    AModal: typeof import('ant-design-vue/es')['Modal']
     APageHeader: typeof import('ant-design-vue/es')['PageHeader']
     APagination: typeof import('ant-design-vue/es')['Pagination']
     APopconfirm: typeof import('ant-design-vue/es')['Popconfirm']
