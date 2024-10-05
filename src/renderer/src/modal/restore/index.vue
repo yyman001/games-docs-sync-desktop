@@ -30,7 +30,7 @@
         >
           <template #addonAfter>
             <a-tooltip placement="left" title="打开路径">
-              <FolderOpenOutlined @click="openItem(docPath)" />
+              <FolderOpenOutlined @click="openPath(docPath)" />
             </a-tooltip>
           </template>
         </a-input>
@@ -44,8 +44,8 @@
           style="margin-bottom: 16px"
         >
           <template #addonAfter>
-            <a-tooltip placement="left" title="打开还原文件">
-              <FolderOpenOutlined />
+            <a-tooltip placement="left" title="打开存档文件">
+              <FolderOpenOutlined @click="openExternal(backupFilePath)"/>
             </a-tooltip>
           </template>
         </a-input>
@@ -63,7 +63,7 @@
 import { defineComponent } from 'vue'
 import { FolderOpenOutlined } from '@ant-design/icons-vue'
 import FieldSetGroup from '@/components/FieldSetGroup/index.vue'
-// import { openItem } from '@/utils/shell'
+import { openExternal, openPath } from '@/utils/shell'
 import { useRestoreFileStoreWhitOut } from '@/store/restoreFile'
 import { storeToRefs } from 'pinia'
 

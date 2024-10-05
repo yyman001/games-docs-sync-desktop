@@ -33,7 +33,7 @@
           >
             <template #addonAfter>
               <a-tooltip placement="left" title="打开路径">
-                <FolderOpenOutlined @click="openItem(GAME_DOC_PATH)" />
+                <FolderOpenOutlined @click="openPath(GAME_DOC_PATH)" />
               </a-tooltip>
             </template>
           </a-input>
@@ -54,7 +54,7 @@
         </a-row>
       </div>
 
-      <div class="steps-action">
+      <div class="flex justify-end space-x-4 steps-action">
         <a-button @click="onModalClose"> 取消 </a-button>
         <a-button :disabled="loading" type="primary" @click="handleStartBackup"> 备份 </a-button>
       </div>
@@ -67,7 +67,7 @@ import { defineComponent, unref, watch } from 'vue'
 import FieldSetGroup from '@/components/FieldSetGroup/index.vue'
 import { FolderOpenOutlined } from '@ant-design/icons-vue'
 
-import { openItem } from '@/utils/shell'
+import { openPath } from '@/utils/shell'
 import { injectStrict } from '@/utils/injectStrict'
 import { BackModal, modal } from '@/hooks/useModal'
 import useDocTree from '../../hooks/useDocTree'
@@ -124,7 +124,7 @@ export default defineComponent({
       nodeSize,
       treeData,
 
-      openItem,
+      openPath,
       handleStartBackup
     }
   }

@@ -91,7 +91,6 @@ app.whenReady().then(() => {
       if (modName && functionName && modules[modName]) {
         const module = modules[modName]
         if (typeof module[functionName] === 'function' && data) {
-
           if (shouldSpread) {
             return await module[functionName].apply(null, data as string[])
           }
@@ -108,21 +107,25 @@ app.whenReady().then(() => {
 
   // 同步
   ipcMain.on('ipcSync', (event, argument: any) => {
-    const { modName, functionName, data } = argument as IpcParameter
-    console.log('ipcSync:', modName, functionName, data)
-    console.log('data type:', typeof data)
+    try {
+      const { modName, functionName, data } = argument as IpcParameter
+      console.log('ipcSync:', modName, functionName, data)
+      console.log('data type:', typeof data)
 
-    // 动态调用指定模块的函数
-    if (modName && functionName && modules[modName]) {
-      const module = modules[modName]
-      if (typeof module[functionName] === 'function' && data) {
-        const result = module[functionName](data) // 调用指定函数
-        event.returnValue = result
-        console.log('ipcSync:result:', result)
+      // 动态调用指定模块的函数
+      if (modName && functionName && modules[modName]) {
+        const module = modules[modName]
+        if (typeof module[functionName] === 'function' && data) {
+          const result = module[functionName](data) // 调用指定函数
+          event.returnValue = result
+          console.log('ipcSync:result:', result)
+        }
       }
-    }
 
-    event.returnValue = null
+      event.returnValue = null
+    } catch (error) {
+      console.log('ipcSync error:', error)
+    }
   })
 
   ipcMain.on('sync', (event, params: any) => {

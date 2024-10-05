@@ -1,19 +1,23 @@
 // 文档#https://www.electronjs.org/zh/docs/latest/api/shell
-const shell = (functionName, data) => {
-  window.electron.ipcRenderer.sendSync('ipcSync', { modName: 'shell', functionName, data })
+import { callNodeAsync } from './ipc'
+const shell = (functionName: string, data: any) => {
+  console.log('shell', functionName, data);
+  callNodeAsync({ modName: 'shell', functionName, data })
 }
 /**
  * 以默认打开方式打开文件.
  *
  * @param {String} fullPath
  */
-export function openItem(fullPath: string) {
+export function openPath(fullPath: string) {
   try {
     shell('openPath', fullPath)
   } catch (error) {
     console.error(error)
   }
 }
+
+
 
 /**
  * 打开文件所在文件夹,一般情况下还会选中它.
