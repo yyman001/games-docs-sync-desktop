@@ -187,6 +187,16 @@ class GamesDocDatabase {
     `)
     return query.all(`%${filter}%`, limit, offset)
   }
+
+  public queryGameInfo(gameDocDir: string) {
+    const query = this.db.prepare(`
+      SELECT * FROM ${GAMES_DOC_TABLE}
+      WHERE gameDocDir = ?
+      LIMIT 1
+    `)
+
+    return query.get(gameDocDir) // 返回匹配的第一条记录
+  }
 }
 
 // 使用示例

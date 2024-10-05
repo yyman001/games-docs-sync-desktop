@@ -1,5 +1,5 @@
 import { computed, ref, unref } from 'vue'
-import { createNodeTree, TreeItem } from '@/utils/node/scanFileTree'
+import { TreeItem } from '@/utils/node/scanFileTree'
 import { formatFileSize } from '@/utils/formatFileSize'
 import { callNodeAsync } from "@/utils/ipc"
 

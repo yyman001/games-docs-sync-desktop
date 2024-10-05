@@ -6,9 +6,10 @@ import icon from '../../resources/icon.png?asset'
 import * as scan from '../renderer/src/utils/tools'
 import * as file from '../renderer/src/utils/node/FileClass'
 import { localGamesDocDatabase } from '../renderer/src/utils/node/sqlite'
-import * as tree from "../renderer/src/utils/node/scanFileTree"
+import * as tree from '../renderer/src/utils/node/scanFileTree'
 import * as path from '../renderer/src/utils/node/path'
 import * as backup from '../renderer/src/utils/node/backup'
+import * as compressing from '../renderer/src/utils/node/compressing'
 
 const APP_HOME_DIR = cwd()
 const modules = {
@@ -19,7 +20,8 @@ const modules = {
   localGamesDocDatabase,
   tree,
   path,
-  backup
+  backup,
+  compressing
 }
 
 function createWindow(): void {
@@ -78,29 +80,37 @@ app.whenReady().then(() => {
 
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
-  // IPC 处理node操作请求
+  // 异步
   ipcMain.handle('ipcAsync', async (_event, argument: any) => {
-    const { modName, functionName, data } = argument as IpcParameter
-    console.log('ipcAsync:', modName, functionName, data)
-    console.log('data type:', typeof data)
+    try {
+      const { modName, functionName, shouldSpread = false, data } = argument as IpcParameter
+      console.log('ipcAsync:', modName, functionName, data)
+      console.log('data type:', typeof data)
 
-    // 动态调用指定模块的函数
-    if (modName && functionName && modules[modName]) {
-      const module = modules[modName]
-      if (typeof module[functionName] === 'function' && data) {
-        const result = await module[functionName](data) // 调用指定函数
-        return result
+      // 动态调用指定模块的函数
+      if (modName && functionName && modules[modName]) {
+        const module = modules[modName]
+        if (typeof module[functionName] === 'function' && data) {
+
+          if (shouldSpread) {
+            return await module[functionName].apply(null, data as string[])
+          }
+
+          return await module[functionName](data)
+        }
       }
-    }
 
-    return null
+      return null
+    } catch (error) {
+      console.log('ipcAsync error:', error)
+    }
   })
 
   // 同步
   ipcMain.on('ipcSync', (event, argument: any) => {
     const { modName, functionName, data } = argument as IpcParameter
     console.log('ipcSync:', modName, functionName, data)
-    console.log('data type:', typeof data);
+    console.log('data type:', typeof data)
 
     // 动态调用指定模块的函数
     if (modName && functionName && modules[modName]) {
@@ -108,7 +118,7 @@ app.whenReady().then(() => {
       if (typeof module[functionName] === 'function' && data) {
         const result = module[functionName](data) // 调用指定函数
         event.returnValue = result
-        console.log('ipcSync:result:', result);
+        console.log('ipcSync:result:', result)
       }
     }
 

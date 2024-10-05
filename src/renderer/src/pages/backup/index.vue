@@ -10,6 +10,7 @@
         <div><ArrowLeftOutlined /></div>
         <div class="ml-4 text-xl">{{ activeDirectoryName }}</div>
       </div>
+      <ModalRestore />
     </header>
     <main class="p-4 overflow-hidden bg-gray-100">
       <template v-if="filterList.length">
@@ -44,6 +45,7 @@ import { ArrowLeftOutlined } from '@ant-design/icons-vue'
 import FileExplorer from '@/components/FileExplorer/index.vue'
 import FileItem from '@/components/FileExplorer/FileItem.vue'
 import { formatTimestamp, formatFileSize } from '@/utils/index'
+import ModalRestore  from '@/modal/restore/index.vue'
 import useCore from './useCore'
 
 const simpleImage = Empty.PRESENTED_IMAGE_SIMPLE

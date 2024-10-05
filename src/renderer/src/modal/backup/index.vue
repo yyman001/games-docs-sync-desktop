@@ -70,7 +70,7 @@ import { FolderOpenOutlined } from '@ant-design/icons-vue'
 import { openItem } from '@/utils/shell'
 import { injectStrict } from '@/utils/injectStrict'
 import { BackModal, modal } from '@/hooks/useModal'
-import useDocTree from './useDocTree'
+import useDocTree from '../../hooks/useDocTree'
 import { useBackupFile, IBackupParams } from './useBackupFile'
 
 export default defineComponent({

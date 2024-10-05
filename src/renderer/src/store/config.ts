@@ -33,7 +33,7 @@ export const useConfigStore = defineStore('config', () => {
   const setDefaultTempPath = () => {
     setTempPath(getPath(LOCAL_CONFIG.DEFAULT_TEMP_PATH))
   }
-  const getTempPath = (...param: any) => {
+  const getTempPath = (...param: string) => {
     return callNodesync({
       modName: 'path',
       functionName: 'getPath',

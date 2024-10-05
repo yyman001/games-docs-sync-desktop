@@ -1,9 +1,11 @@
 import { ref, unref } from 'vue'
 import { openItem, showItemInFolder } from '@/utils/shell'
 import { useLocalFileStoreWhitOut } from '@/store/localFile'
+import { useRestoreFileStoreWhitOut } from '@/store/restoreFile'
 
 export default function () {
   const localFileStore = useLocalFileStoreWhitOut()
+  const { showRestoreFile } = useRestoreFileStoreWhitOut()
 
   // 当前打开的文件夹
   const activeDirectoryName = ref<string>('')
@@ -19,7 +21,8 @@ export default function () {
       handleSetDirectory(file.basename)
     } else {
       // open file
-      openItem(file.path)
+      // openItem(file.path)
+      showRestoreFile(file)
     }
   }
 
