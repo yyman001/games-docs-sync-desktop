@@ -1,5 +1,5 @@
 import fs from 'fs-extra'
-
+import path from 'path'
 /**
  * 异步函数用于移动文件或目录
  *
@@ -155,6 +155,52 @@ export async function copy(copy_path: string, save_path: string, filter_funtion?
 }
 
 /**
+ * 复制目录，并过滤掉指定的文件列表
+ * @param {string} srcDir - 源目录路径
+ * @param {string} destDir - 目标目录路径
+ * @param {Array<string>} filterFiles - 需要过滤掉的文件列表（相对路径）
+ */
+export async function copyWithFilter(srcDir: string, destDir: string, filterFiles: string[]) {
+  if (!srcDir || !destDir) {
+    throw new Error('Invalid path provided')
+  }
+  // 确保 filterFiles 中的所有路径是标准化的绝对路径
+  const normalizedFilterFiles = filterFiles.map((file) => path.resolve(file))
+
+  // 自定义过滤器函数
+  const filter = (src: string) => {
+    const normalizedSrc = path.resolve(src)
+    try {
+      const stats = fs.statSync(normalizedSrc)
+
+      if (stats.isDirectory()) {
+        // 判断这个文件夹中是否有需要复制的文件
+        const hasFilesToCopy = normalizedFilterFiles.some((file) => {
+          return file.startsWith(normalizedSrc + path.sep)
+        })
+
+        // 如果该目录下包含需要复制的文件，则返回 true，允许递归复制该目录
+        return hasFilesToCopy
+      } else if (stats.isFile()) {
+        // 如果是文件，检查是否在需要复制的文件列表中
+        return normalizedFilterFiles.includes(normalizedSrc)
+      }
+    } catch (error) {
+      console.error(`Error reading path: ${normalizedSrc}`, error)
+      return false // 如果读取失败，跳过该文件或文件夹
+    }
+  }
+
+  try {
+    await fs.copy(srcDir, destDir, { filter })
+    return [null, true]
+  } catch (error) {
+    console.log(error)
+    return [err, false]
+  }
+}
+
+/**
  * 确保目标目录存在，如果不存在则创建
  *
  * 该函数用于在文件操作前确保所需的目录已经存在它尝试异步方式确保目录的存在性如果目录不存在，
@@ -191,7 +237,6 @@ export async function remove(path: string) {
 
   return false
 }
-
 
 /**
  * 异步检查路径是否存在

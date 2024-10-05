@@ -96,7 +96,6 @@ export const useRestoreFileStore = defineStore('restoreFile', () => {
   }
 
   const onRestoreBackup = async () => {
-    // selectedKeys
     if (!selectedKeys.value.length) {
       message.warn('请选择要恢复的文件!')
       return
@@ -105,10 +104,10 @@ export const useRestoreFileStore = defineStore('restoreFile', () => {
     try {
       // 复制文件
       await callNodeAsync({
-        functionName: 'copy',
+        functionName: 'copyWithFilter',
         modName: 'file',
         shouldSpread: true, // 展开参数
-        data: [unref(tempUnCompressGameDocPath), unref(docPath)]
+        data: [unref(tempUnCompressGameDocPath), unref(docPath), unref(selectedKeys)]
       })
       // 删除解压文件
       await callNodeAsync({
@@ -128,6 +127,20 @@ export const useRestoreFileStore = defineStore('restoreFile', () => {
     }
   }
 
+  const onRemoveTempDir = async () => {
+    try {
+      // 删除解压文件
+      await callNodeAsync({
+        functionName: 'remove',
+        modName: 'file',
+        data: unref(tempUnCompressGameDocPath)
+      })
+      onModalClose()
+    } catch (error) {
+      console.error(error)
+    }
+   }
+
   return {
     docPath,
     setDocPath,
@@ -140,6 +153,7 @@ export const useRestoreFileStore = defineStore('restoreFile', () => {
     onModalClose,
 
     onRestoreBackup,
+    onRemoveTempDir,
     showRestoreFile,
 
     selectedKeys,
