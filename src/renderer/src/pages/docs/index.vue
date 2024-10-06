@@ -26,7 +26,10 @@
 
           <div class="w-2/5 p-4">
             <h2 class="mb-4 text-xl text-black">{{ record.gameName }}</h2>
-            <button class="px-4 py-2 text-white bg-green-500 rounded hover:bg-green-600">
+            <button
+              class="px-4 py-2 text-white bg-green-500 rounded hover:bg-green-600"
+              @click="onAddGameDocToMyLib(record)"
+            >
               添加到游戏库
             </button>
           </div>
@@ -74,8 +77,10 @@ import { deepCopy } from '@/utils/deepCopy'
 import { GameItem, GameDocItem } from '@/model'
 import { callNodeAsync } from '@/utils/ipc'
 import { useDocFormStoreWhitOut } from '@/store/doc'
+import { useGames } from '../games/db'
 
 const { onModalOpen } = useDocFormStoreWhitOut()
+const { addGame, searchGame } = useGames()
 
 const searchText = ref('')
 const tableColumns = [
@@ -90,7 +95,24 @@ const tableColumns = [
   }
 ]
 
-const onAdd = async (item: GameDocItem) => {}
+const onAddGameDocToMyLib = async (item: GameDocItem) => {
+  const hasGame = await searchGame(item.gameDocDir)
+  if (hasGame) {
+    message.error('游戏已经存在!')
+    return
+  }
+
+  console.log('item', item);
+  // todo: GameDocItem 改为 GameItem
+  const rtx = await addGame(deepCopy(item))
+  console.log(rtx)
+  if (rtx !== null) {
+    message.success('添加成功!')
+    return
+  }
+
+  message.error('添加失败!')
+}
 
 const onUpdate = async (record: any) => {}
 
