@@ -1,4 +1,4 @@
-import { copy, ensureDir, remove } from './FileClass'
+import { ensureDir, remove, copyWithFilter } from './FileClass'
 import { compressDir, unCompress } from './compressing'
 import { join } from 'path'
 import fse from 'fs-extra'
@@ -31,16 +31,9 @@ export const backupFile = async ({
   gameDocDir,
   saveFiles
 }: any): Promise<BackupFileData> => {
-  let error
-  if (Array.isArray(saveFiles) && saveFiles.length) {
-    ;[error] = await copy(docPath, tempPath, (input: string) => {
-      // 不勾选文件夹的情况下需要对文件夹路径返回真才可以继续后面的copy
-      if (fse.lstatSync(input).isDirectory()) {
-        return true
-      }
-      return saveFiles.includes(input)
-    })
-  }
+  console.log(docPath, tempPath, backPath, gameDocDir, saveFiles);
+
+  let [error, _] = await copyWithFilter(docPath, tempPath, saveFiles)
 
   if (error) return [error, null]
   // 检查存档目录是否存在

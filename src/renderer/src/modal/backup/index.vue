@@ -1,6 +1,6 @@
 <template>
   <a-modal
-    title="备份"
+    title="存档备份"
     :visible="isVisible"
     :footer="null"
     :maskClosable="false"
@@ -62,7 +62,7 @@
   </a-modal>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { defineComponent, unref, watch } from 'vue'
 import FieldSetGroup from '@/components/FieldSetGroup/index.vue'
 import { FolderOpenOutlined } from '@ant-design/icons-vue'
@@ -73,62 +73,46 @@ import { BackModal, modal } from '@/hooks/useModal'
 import useDocTree from '../../hooks/useDocTree'
 import { useBackupFile, IBackupParams } from './useBackupFile'
 
-export default defineComponent({
-  name: 'modal-backup',
-  components: {
-    FieldSetGroup,
-    FolderOpenOutlined
-  },
+defineComponent({
+  name: 'modal-backup'
+})
 
-  setup(props: any, { emit }) {
-    const { selectedKeys, treeData, createNode, nodeSize } = useDocTree()
-    const { loading, onStartBackup } = useBackupFile()
+const { selectedKeys, treeData, createNode, nodeSize } = useDocTree()
+const { loading, onStartBackup } = useBackupFile()
 
-    const { isVisible, onModalClose, GAME_DOC_DIR, GAME_DOC_PATH, GAME_FILES_BACKUP_PATH } =
-      injectStrict<BackModal>(modal)
+const { isVisible, onModalClose, GAME_DOC_DIR, GAME_DOC_PATH, GAME_FILES_BACKUP_PATH } =
+  injectStrict<BackModal>(modal)
 
-    watch(GAME_DOC_PATH, (path) => {
-      if (!path) return
-      createNode(path, GAME_DOC_DIR.value)
-    })
+watch(
+  () => unref(GAME_DOC_PATH),
+  (path) => {
+    if (!path) return
+    createNode(path, GAME_DOC_DIR.value)
+  }
+)
 
-    watch(isVisible, (val) => {
-      if (!val) {
-        GAME_DOC_PATH.value = ''
-      }
-    })
-
-    const handleStartBackup = async () => {
-      try {
-        await onStartBackup({
-          docPath: unref(GAME_DOC_PATH),
-          backPath: unref(GAME_FILES_BACKUP_PATH),
-          gameDocDir: unref(GAME_DOC_DIR),
-          saveFiles: unref(selectedKeys)
-        } as IBackupParams)
-        onModalClose()
-      } catch (e) {
-        console.error(e)
-      }
-    }
-
-    return {
-      isVisible,
-      onModalClose,
-
-      GAME_DOC_PATH,
-      GAME_FILES_BACKUP_PATH,
-
-      loading,
-      selectedKeys,
-      nodeSize,
-      treeData,
-
-      openPath,
-      handleStartBackup
+watch(
+  () => unref(isVisible),
+  (val) => {
+    if (!val) {
+      GAME_DOC_PATH.value = ''
     }
   }
-})
+)
+
+const handleStartBackup = async () => {
+  try {
+    await onStartBackup({
+      docPath: unref(GAME_DOC_PATH),
+      backPath: unref(GAME_FILES_BACKUP_PATH),
+      gameDocDir: unref(GAME_DOC_DIR),
+      saveFiles: unref(selectedKeys)
+    } as IBackupParams)
+    onModalClose()
+  } catch (e) {
+    console.error(e)
+  }
+}
 </script>
 
 <style></style>

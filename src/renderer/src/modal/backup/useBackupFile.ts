@@ -1,5 +1,5 @@
 import { ref, unref } from 'vue'
-import { message } from 'ant-design-vue'
+import { message, notification } from 'ant-design-vue'
 import { backupFile, BackupFileData } from '@/utils/node/backup'
 import { useConfigStoreWhitOut } from '@/store/config'
 import { callNodeAsync } from '@/utils/ipc'
@@ -65,7 +65,11 @@ export function useBackupFile() {
     } */
 
     loading.value = false
-    messageSuccess('备份成功!')
+    notification.open({
+      placement: 'bottomRight',
+      message: '消息',
+      description: `存档备份成功!`
+    })
   }
 
   return {

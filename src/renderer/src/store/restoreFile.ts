@@ -119,7 +119,7 @@ export const useRestoreFileStore = defineStore('restoreFile', () => {
       notification.open({
         placement: 'bottomRight',
         message: '消息',
-        description: '游戏存档恢复成功!'
+        description: '存档恢复成功!'
       })
       onModalClose()
     } catch (error) {
