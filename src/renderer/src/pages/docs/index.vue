@@ -3,6 +3,8 @@
     <!-- Header -->
     <header class="p-4">
       <h2 class="text-2xl font-bold text-black">游戏库</h2>
+      <button @click="onModalOpen">+++</button>
+      <ModalDoc />
     </header>
 
     <!-- Content -->
@@ -65,11 +67,15 @@ import {
   Ref,
   watch
 } from 'vue'
+import ModalDoc from '@/modal/doc/index.vue'
 
 import { horizontalCover } from '@/utils/steamPrivew'
 import { deepCopy } from '@/utils/deepCopy'
 import { GameItem, GameDocItem } from '@/model'
 import { callNodeAsync } from '@/utils/ipc'
+import { useDocFormStoreWhitOut } from '@/store/doc'
+
+const { onModalOpen } = useDocFormStoreWhitOut()
 
 const searchText = ref('')
 const tableColumns = [

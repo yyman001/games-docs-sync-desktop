@@ -1,4 +1,4 @@
-import { join, normalize } from 'path'
+import { join, parse, normalize } from 'path'
 import { cwd } from 'process'
 import useSystem from './useSystem'
 const APP_HOME_DIR = cwd()
@@ -9,6 +9,54 @@ export const getAppPath = (...params: string[]) => {
 
 export const getPath = (params: string[]) => {
   return join.apply(null, params)
+}
+
+// 提取路径中的环境变量
+export const extractVariables = (path) => {
+  const regex = /%([^%]+)%/g
+  const matches = []
+  let match
+
+  while ((match = regex.exec(path)) !== null) {
+    matches.push(match[1]) // 提取 % 里面的内容
+  }
+
+  return matches.join()
+}
+
+// 新增方法：将带有 % 的路径转换为相对路径
+export const convertVariablePathToRelative = (path: string) => {
+  const pathExtractVariables = extractVariables(path)
+  const isFullPath = /\w+:/.test(path)
+  // 处理带 环境变量的路径
+  if (pathExtractVariables) {
+    const tempPath = path.replace(/%([^%]+)%/g, '')
+    console.log('tempPath:', tempPath);
+
+    // TODO: 其他数据类型等遇到错误处理
+    switch (pathExtractVariables) {
+      case 'LOCALAPPDATA':
+        return normalize(join('\\AppData', '\\Local', tempPath))
+      case 'APPDATA':
+        return normalize(join('\\AppData', '\\Roaming', tempPath))
+      case 'DOCUMENTS':
+        return normalize(join('\\Documents', tempPath))
+      case 'USERPROFILE':
+      case 'HOME':
+        return normalize(join(tempPath))
+      default:
+        console.log('convertVariablePathToRelative: unkonw path type')
+        return ''
+    }
+    // 处理绝对路径
+  } else if (isFullPath) {
+    // 表达式: \w+:\\users\\\w+?\\ 替换 C:\Users\???\
+    // 移除绝对路径的用户路径段
+    const _tempPath = path.replace(/\w+:\\users\\\w+?\\/gi, '\\')
+    return normalize(_tempPath)
+  }
+
+  return ''
 }
 
 /**
@@ -27,9 +75,13 @@ export const parsePath = (path: string, homeDir: string) => {
   if (!path) {
     throw new Error('Path is empty')
   }
+
   // 标准化路径分隔符
-  const normalizedPath = path.replace(/\//g, '\\') // 将 / 替换为 \
-  const userProfilePath = homeDir.replace(/\//g, '\\')
+  const normalizedPath = convertVariablePathToRelative(path) || normalize(path)
+  const userProfilePath = normalize(homeDir)
+  console.log('normalizedPath', normalizedPath)
+  console.log('userProfilePath', userProfilePath)
+
   const pathTypeX = [
     {
       parent: 'AppData',
@@ -80,7 +132,7 @@ export const parsePath = (path: string, homeDir: string) => {
     result = 'USER_PROFILE'
   }
 
-  return result // 返回结果
+  return result
 }
 
 /**
@@ -97,7 +149,6 @@ export const parsePath = (path: string, homeDir: string) => {
 export const getGameDocPath = (path: string) => {
   // 解析输入路径的类型
   const type = parsePath(path, HOME_DIR)
-
   // 根据解析的路径类型，返回相应的游戏文档路径
   switch (type) {
     // 对于以下预定义的目录类型，从用户主目录下相应的位置拼接并返回路径
@@ -110,6 +161,7 @@ export const getGameDocPath = (path: string) => {
       return join(HOME_DIR, path)
     // 如果解析的类型是用户配置文件，返回用户配置文件路径
     case 'USER_PROFILE':
+    case 'HOME':
       return HOME_DIR
     // 对于未知的路径类型，返回'UNKNOWN'
     default:
@@ -117,6 +169,16 @@ export const getGameDocPath = (path: string) => {
   }
 }
 
+export const getGameDocType = (fullPath: string) => {
+  return parsePath(fullPath, HOME_DIR)
+}
+
 export const applyGetGameDocPath = (params: any) => {
   return getGameDocPath.apply(null, params)
+}
+
+export const getParsePathObject = (path: string) => {
+  console.log('=======getParsePathObject:', path)
+
+  return parse(path)
 }

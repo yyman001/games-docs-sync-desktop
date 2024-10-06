@@ -109,8 +109,11 @@ app.whenReady().then(() => {
   ipcMain.on('ipcSync', (event, argument: any) => {
     try {
       const { modName, functionName, data } = argument as IpcParameter
-      console.log('ipcSync:', modName, functionName, data)
-      console.log('data type:', typeof data)
+      console.log('================= ipcSync ======================')
+
+      console.log('modName:', modName)
+      console.log('functionName:', functionName)
+      console.log('data type:', typeof data, data)
 
       // 动态调用指定模块的函数
       if (modName && functionName && modules[modName]) {
@@ -118,14 +121,15 @@ app.whenReady().then(() => {
         if (typeof module[functionName] === 'function' && data) {
           const result = module[functionName](data) // 调用指定函数
           event.returnValue = result
-          console.log('ipcSync:result:', result)
+          console.log('result:', result)
         }
       }
 
       event.returnValue = null
     } catch (error) {
-      console.log('ipcSync error:', error)
+      console.log('error:', error)
     }
+    console.log('================= ipcSync end ======================')
   })
 
   ipcMain.on('sync', (event, params: any) => {

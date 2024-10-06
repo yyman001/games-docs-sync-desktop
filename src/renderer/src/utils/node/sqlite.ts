@@ -197,6 +197,31 @@ class GamesDocDatabase {
 
     return query.get(gameDocDir) // 返回匹配的第一条记录
   }
+
+  public queryHasGameDoc(gameName?: string, steamId?: string) {
+    if (!gameName && !steamId) {
+      throw new Error('至少需要输入一个条件: gameName 或 steamId')
+    }
+
+    const conditions = []
+    const params = []
+
+    if (gameName) {
+      conditions.push('gameName LIKE ?')
+      params.push(`%${gameName}%`)
+    }
+    if (steamId) {
+      conditions.push('steamId = ?')
+      params.push(steamId)
+    }
+
+    const query = this.db.prepare(`
+      SELECT * FROM ${GAMES_DOC_TABLE}
+      WHERE ${conditions.join(' OR ')}
+    `)
+
+    return query.all(...params)
+  }
 }
 
 // 使用示例

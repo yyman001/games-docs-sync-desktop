@@ -10,10 +10,13 @@
 | PUBLIC             | "C:\\Users\\Public"                        | #这个路径下一般没有存档, 不排除奇葩游戏
 | PUBLIC_Documents   | "C:\\Users\\Public\Documents"              |
 | USER_PROFILE        | "C:\\Users\\yyman001_cp"                   |
+| USER_PROFILE_SAVED_GAMES        | C:\Users\yyman001\Saved Games             |
 | DOCUMENTS          | "\\Documents"                              |
 | DOCUMENTS_MY_GAMES | "\\Documents\\My Games"                    |
 | USERNAME           | "yyman001_cp"                              |
 */
+
+import {join} from 'path'
 
 export const getPathType = (fullPath: string) => {
   const isFullPath = /\w+:/.test(fullPath)
@@ -21,8 +24,12 @@ export const getPathType = (fullPath: string) => {
 }
 
 export const parsePath = (path: string, homeDir: string) => {
+  if (!path){
+    throw new Error("Path is empty")
+  }
   // 标准化路径分隔符
   const normalizedPath = path.replace(/\//g, '\\') // 将 / 替换为 \
+  const userProfilePath = homeDir.replace(/\//g, '\\')
   const pathTypeX = [
     {
       parent: 'AppData',
@@ -38,7 +45,7 @@ export const parsePath = (path: string, homeDir: string) => {
       children: [{ name: 'My Games', key: 'DOCUMENTS_MY_GAMES' }]
     },
     { parent: 'Public', children: [{ name: 'Documents', key: 'PUBLIC_DOCUMENTS' }], key: 'PUBLIC' },
-    { parent: 'UserProfile', children: null, key: 'USER_PROFILE' },
+    { parent: 'UserProfile', children: [{name: 'Saved Games', key:'USER_PROFILE_SAVED_GAMES'}], key: 'USER_PROFILE' },
     { parent: 'Epic Games', children: null, key: 'EPIC_GAMES' },
     { parent: 'GOG', children: null, key: 'GOG' },
     { parent: 'Origin', children: null, key: 'ORIGIN' },
@@ -65,12 +72,28 @@ export const parsePath = (path: string, homeDir: string) => {
   }
 
   // 处理 USER_PROFILE 的情况
-  const userProfilePath = homeDir // 使用传入的 homeDir
   if (normalizedPath === userProfilePath) {
     result = 'USER_PROFILE'
   }
 
   return result // 返回结果
+}
+
+export const getGameDocPath = (path: string, homeDir: string) {
+  const type = parsePath(path, homeDir)
+  switch (type) {
+    case 'APP_DATA':
+    case 'LOCAL_LOW':
+    case 'LOCAL_APP_DATA':
+    case 'DOCUMENTS':
+    case 'DOCUMENTS_MY_GAMES':
+    case 'USER_PROFILE_SAVED_GAMES':
+      return join(homeDir, path)
+    case 'USER_PROFILE':
+      return homeDir
+    default:
+      return 'UNKNOWN'
+  }
 }
 
 // 测试用例
@@ -84,7 +107,9 @@ const testParsePath = () => {
     { input: `${homeDir}\\Documents\\GameName`, expected: 'DOCUMENTS' },
     { input: `C:\\Users\\Public\\Documents\\GameName`, expected: 'PUBLIC_DOCUMENTS' }, // C:\Users\Public\Documents
     { input: homeDir, expected: 'USER_PROFILE' },
-    { input: 'C:\\UnknownPath', expected: 'UNKNOWN' }
+    { input: `${homeDir}\\\Saved Games`, expected: 'USER_PROFILE_SAVED_GAMES' },
+    { input: 'C:\\UnknownPath', expected: 'UNKNOWN' },
+    { input: '%USERPROFILE%\\Documents\\30XX\\' , expected: 'DOCUMENTS' }
   ]
 
   testCases.forEach(({ input, expected }) => {
