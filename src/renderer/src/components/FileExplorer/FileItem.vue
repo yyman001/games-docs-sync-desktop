@@ -35,7 +35,7 @@
       {{ time }}
     </div>
     <div class="flex-none w-2/12">
-      {{ time }}
+      ---
     </div>
   </div>
 </template>

@@ -13,7 +13,7 @@
       <ModalRestore />
     </header>
     <main class="p-4 overflow-hidden bg-gray-100">
-      <template v-if="filterList.length">
+      <template v-if="!filterList.length">
         <FileExplorer>
           <FileItem
             v-for="item in filterList"
@@ -33,7 +33,9 @@
         </FileExplorer>
       </template>
       <template v-else>
-        <Empty description="未找到相关备份文件" :image="simpleImage" />
+        <div class="grid h-full place-content-center">
+          <Empty description="无游戏备份存档文件" :image="simpleImage" />
+        </div>
       </template>
     </main>
   </div>
@@ -48,7 +50,7 @@ import { formatTimestamp, formatFileSize } from '@/utils/index'
 import ModalRestore  from '@/modal/restore/index.vue'
 import useCore from './useCore'
 
-const simpleImage = Empty.PRESENTED_IMAGE_SIMPLE
+const simpleImage = Empty.PRESENTED_IMAGE_DEFAULT
 const {
   filterList,
   fileOrDirSize,
