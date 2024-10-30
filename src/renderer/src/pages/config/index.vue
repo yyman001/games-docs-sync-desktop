@@ -2,9 +2,6 @@
 import { ScrollArea } from '@/components/ui/scroll-area'
 import FieldSetGroup from '@/components/FieldSetGroup/index.vue'
 import {
-  FolderOutlined,
-  AppstoreOutlined,
-  AppstoreAddOutlined,
   SettingOutlined,
   ReloadOutlined,
   RedoOutlined,
@@ -16,7 +13,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle
 } from '@/components/ui/card'

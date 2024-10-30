@@ -1,4 +1,4 @@
-import { FieldValue } from 'firebase/firestore'
+// @ts-nocheck
 import { BufferLike, GetFileContentsOptions } from 'webdav'
 
 export interface BackupItem {
@@ -53,7 +53,7 @@ export interface GameItem {
   steamId: string | null
   systemType: string
   pathType?: string
-  createdAt?: FieldValue
+  createdAt?: string
 }
 
 export interface GameDocItem {

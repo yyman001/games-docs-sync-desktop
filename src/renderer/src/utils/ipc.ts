@@ -4,6 +4,8 @@ export interface IpcParameter {
   // 调用函数名
   functionName: string
   data: any
+  // 是否使用apply调用函数
+  shouldSpread?: boolean
 }
 
 export interface dialogParameter {
@@ -13,7 +15,7 @@ export interface dialogParameter {
   openFileType?: string
 }
 
-// 渲染进程代码示例
+// @ts-ignore
 const ipcRenderer = window.electron.ipcRenderer
 // 发送文件操作请求
 export async function callNodeApi(data: any) {

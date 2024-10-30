@@ -1,4 +1,5 @@
 /// <reference types="vite/client" />
+import { IpcRenderer } from 'electron'
 
 declare module '*.vue' {
   import type { DefineComponent } from 'vue'
@@ -10,7 +11,7 @@ declare module '*.vue' {
 // 声明 electron 类型
 interface Window {
   electron: {
-    ipcRenderer: any; // 根据实际类型进行调整
-  };
+    ipcRenderer: IpcRenderer // 根据实际类型进行调整
+    systemInfo: any
+  }
 }
-

@@ -36,8 +36,7 @@
 <script setup lang="ts">
 import Menu from './components/Menu/index.vue'
 import { ReloadOutlined } from '@ant-design/icons-vue'
-import { Separator } from '@/components/ui/separator'
-import { RefreshCw, Gamepad } from 'lucide-vue-next'
+import { Gamepad } from 'lucide-vue-next'
 
 import {
   Select,

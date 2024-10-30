@@ -1,10 +1,11 @@
-import { computed, inject, reactive, ref, unref, watch } from 'vue'
+import { computed, reactive, ref, unref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 // import { useCloudFileStoreWhitOut } from '@/store/cloudFile'
 import { useLocalFileStoreWhitOut } from '@/store/localFile'
 import useFile from './useFile'
 
 export default function () {
+  const searchText = ref('') // todo: by use state
   const isUseCloud = ref(false) // 是否使用云同步功能
   // const useConfigStore = useConfigStoreWhitOut()
   const localFileStore = useLocalFileStoreWhitOut()

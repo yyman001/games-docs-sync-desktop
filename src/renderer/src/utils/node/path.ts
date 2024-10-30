@@ -12,9 +12,11 @@ export const getPath = (params: string[]) => {
 }
 
 // 提取路径中的环境变量
+// @ts-ignore
+
 export const extractVariables = (path) => {
   const regex = /%([^%]+)%/g
-  const matches = []
+  const matches:string[] = []
   let match
 
   while ((match = regex.exec(path)) !== null) {
@@ -111,7 +113,7 @@ export const parsePath = (path: string, homeDir: string) => {
 
   for (const type of pathTypeX) {
     if (normalizedPath.indexOf(type.parent) !== -1) {
-      result = type.key
+      result = type.key as string
 
       if (type.children === null) {
         break
@@ -120,7 +122,7 @@ export const parsePath = (path: string, homeDir: string) => {
       for (const child of type.children) {
         if (normalizedPath.indexOf(child.name) !== -1) {
           // 检查切割后的路径部分
-          result = child.key // 记录小类
+          result = child.key as string // 记录小类
           break // 找到小类后退出循环
         }
       }

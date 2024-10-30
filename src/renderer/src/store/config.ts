@@ -71,27 +71,6 @@ export const useConfigStore = defineStore('config', () => {
     setConfigFilePath(path)
   }
 
-  /* 数据导入导出 */
-  const databseInputPath = ref('')
-  const databaseExportPath = ref('')
-
-  const setDatabseInputPath = (path: string) => {
-    databseInputPath.value = path
-    setLocalStorageItem(LOCAL_CONFIG.CUSTOM_DB_INPUT_PATH, path)
-  }
-  const setDatabaseExportPath = (path: string) => {
-    databaseExportPath.value = path
-    setLocalStorageItem(LOCAL_CONFIG.CUSTOM_DB_OUT_PATH, path)
-  }
-
-  const recoverDefalutDatabaseInputPath = () => {
-    setDatabseInputPath(getAppPath('backupDatabase.json'))
-  }
-
-  const recoverDefalutDatabaseExportPath = () => {
-    setDatabaseExportPath(getAppPath())
-  }
-
   /* 初始化配置方法 */
   const initConfig = () => {
     const customBackPath = getLocalStorageItem(LOCAL_CONFIG.CUSTOM_BACK_PATH)

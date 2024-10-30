@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref, reactive, computed } from 'vue'
+import { ref, unref, reactive, computed } from 'vue'
 import { message } from 'ant-design-vue'
 import { SdkConfig } from '@/model'
 import { showOpenDialog, callNodeAsync } from '@/utils/ipc'
