@@ -1,4 +1,4 @@
-import { TreeItem } from '@/utils/node/scanFileTree'
+import { TreeItem } from '@/utils/getTreeItem'
 import { ref } from 'vue'
 
 export default function useModal () {

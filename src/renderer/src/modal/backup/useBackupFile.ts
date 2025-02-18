@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { ref, unref } from 'vue'
 import { message, notification } from 'ant-design-vue'
 import { backupFile, BackupFileData } from '@/utils/node/backup'
 import { useConfigStoreWhitOut } from '@/store/config'
@@ -13,18 +13,20 @@ export interface IBackupParams {
 
 export function useBackupFile() {
   const { HOME_DIR, SYSTEM_TYPE } = window?.systemInfo
+  const { success: messageSuccess, error: messageError } = message
   const useConfigStore = useConfigStoreWhitOut()
 
   const remask = ref('')
   const loading = ref(false)
+  const progress = ref(0)
   const onStartBackup = async ({ docPath, backPath, gameDocDir, saveFiles }: IBackupParams) => {
     const tempPath = useConfigStore.getTempPath(gameDocDir)
     console.log('tempPath', tempPath);
-    if (!saveFiles.length) return message.error('请勾选要备份的文件!')
+    if (!saveFiles.length) return messageError('请勾选要备份的文件!')
 
     loading.value = true
     // const gameData = await getGamesDocInfo(gameDocDir)
-    // if (!gameData) return message.error('未查找游戏数据!')
+    // if (!gameData) return messageError('未查找游戏数据!')
 
     const [errorText, backupData] = await callNodeAsync({
       modName: 'backup',
@@ -38,7 +40,7 @@ export function useBackupFile() {
       }
     })
     if (errorText || !backupData) {
-      message.error(errorText as string)
+      messageError(errorText as string)
       return
     }
 
@@ -58,7 +60,7 @@ export function useBackupFile() {
     }) */
 
     /* if (backupWriteResult === null) {
-      message.error('添加备份历史记录失败!')
+      messageError('添加备份历史记录失败!')
       return
     } */
 

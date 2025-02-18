@@ -1,5 +1,5 @@
-import { ref } from 'vue'
-import { showItemInFolder } from '@/utils/shell'
+import { ref, unref } from 'vue'
+import { openItem, showItemInFolder } from '@/utils/shell'
 import { useLocalFileStoreWhitOut } from '@/store/localFile'
 import { useRestoreFileStoreWhitOut } from '@/store/restoreFile'
 

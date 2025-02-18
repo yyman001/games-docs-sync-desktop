@@ -87,7 +87,7 @@ watch(
   () => unref(GAME_DOC_PATH),
   (path) => {
     if (!path) return
-    createNode(path, unref(GAME_DOC_DIR))
+    createNode(path, GAME_DOC_DIR.value)
   }
 )
 

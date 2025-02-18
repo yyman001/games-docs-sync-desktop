@@ -1,5 +1,5 @@
-// @ts-ignore
 import Database from 'better-sqlite3'
+import fs from 'fs'
 import { getAppPath } from './path'
 
 const sqlFilePath = getAppPath('pub_games_doc.sqlite')
@@ -69,7 +69,7 @@ class GamesDocDatabase {
   }
 
   public insert(data: any[]) {
-    const errorLog: string[] = []
+    const errorLog = []
     data.forEach((element) => {
       try {
         this.insertData(element)
@@ -114,13 +114,16 @@ class GamesDocDatabase {
   }
 
   public update(data: any[]) {
+    const errorLog = []
     data.forEach((element) => {
       try {
         this.updateData(element)
       } catch (e) {
         console.error(e)
+        errorLog.push(`${element}: ${e}`)
       }
     })
+    return errorLog
   }
 
   private initDatabase() {
@@ -141,12 +144,7 @@ class GamesDocDatabase {
     return totalCountResult.count // 返回总数据长度
   }
 
-  public getPage({
-    page = 1,
-    pageSize = 10,
-    orderBy = 'gameName',
-    orderDirection = 'ASC'
-  }: PaginationOptions) {
+  public getPage({ page = 1, pageSize = 10, orderBy = 'gameName', orderDirection = 'ASC' } : PaginationOptions) {
     const validOrderBys = ['gameName', 'gameDocDir', 'steamId'] // 允许的排序字段
     const validOrderDirections = ['ASC', 'DESC'] // 允许的排序方向
 
@@ -179,8 +177,9 @@ class GamesDocDatabase {
   }
 
   // todo: 添加搜索功能再做
-  public getFilteredPaginatedData(options: { filter: string; limit: number; offset: number }) {
-    const { filter, limit, offset } = options
+  public getFilteredPaginatedData(
+    { filter, limit, offset } = { filter: string, limit: number, offset: number }
+  ) {
     const query = this.db.prepare(`
       SELECT * FROM ${GAMES_DOC_TABLE}
       WHERE gameName LIKE ?
@@ -204,8 +203,8 @@ class GamesDocDatabase {
       throw new Error('至少需要输入一个条件: gameName 或 steamId')
     }
 
-    const conditions: string[] = []
-    const params: string[] = []
+    const conditions = []
+    const params = []
 
     if (gameName) {
       conditions.push('gameName LIKE ?')

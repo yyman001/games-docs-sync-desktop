@@ -1,4 +1,3 @@
-// @ts-nocheck
 import fs from 'fs-extra'
 import path from 'path'
 /**
@@ -120,7 +119,6 @@ export function readdirSync(dir_path: string) {
     return fs.readdirSync(dir_path)
   } catch (error) {
     console.error(error)
-    return null
   }
 }
 
@@ -128,9 +126,10 @@ export function readdirSync(dir_path: string) {
  * 异步函数用于复制文件或目录
  * @param copy_path 要复制的文件或目录路径
  * @param save_path 复制的目标路径
+ * @param filter_funtion 可选的过滤函数，用于决定哪些文件或目录要复制
  * @returns 返回一个数组，第一个元素是错误对象（如果有的话），第二个元素是布尔值，表示复制是否成功
  */
-export async function copy(copy_path: string, save_path: string) {
+export async function copy(copy_path: string, save_path: string, filter_funtion?: Function) {
   try {
     // 日志：显示复制的源路径和目标路径
     console.log('copy_path:', copy_path)
@@ -142,7 +141,7 @@ export async function copy(copy_path: string, save_path: string) {
     }
 
     // 使用fs模块的copy方法进行文件或目录的复制，可选地应用过滤函数
-    await fs.copy(copy_path, save_path)
+    await fs.copy(copy_path, save_path, filter_funtion ? { filter: filter_funtion } : undefined)
     // 日志：确认复制操作成功
     console.log(`copy ${copy_path} is success!`)
     // 返回成功状态
@@ -161,7 +160,6 @@ export async function copy(copy_path: string, save_path: string) {
  * @param {string} destDir - 目标目录路径
  * @param {Array<string>} filterFiles - 需要过滤掉的文件列表（相对路径）
  */
-// @ts-ignore
 export async function copyWithFilter(srcDir: string, destDir: string, filterFiles: string[]) {
   if (!srcDir || !destDir) {
     throw new Error('Invalid path provided')
@@ -198,7 +196,7 @@ export async function copyWithFilter(srcDir: string, destDir: string, filterFile
     return [null, true]
   } catch (error) {
     console.log(error)
-    return [error, false]
+    return [err, false]
   }
 }
 

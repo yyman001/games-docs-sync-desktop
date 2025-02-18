@@ -4,7 +4,7 @@ import { useConfigStoreWhitOut } from '@/store/config'
 import { callNodeAsync } from '@/utils/ipc'
 
 window.electron.ipcRenderer.on('main-process-load', (event) => {
-  console.log('应用启动完成!', event)
+  console.log('应用启动完成!')
 
   // 初始化配置信息
   const useConfigStore = useConfigStoreWhitOut()

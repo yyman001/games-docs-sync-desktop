@@ -3,7 +3,7 @@
     <!-- Header -->
     <header class="p-4">
       <h2 class="text-2xl font-bold text-black">游戏库</h2>
-      <button @click="onModalOpen"><PlusOutlined /></button>
+      <button @click="onModalOpen">+++</button>
       <ModalDoc />
     </header>
 
@@ -58,10 +58,13 @@
 <script lang="ts" setup>
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { message } from 'ant-design-vue'
-import { PlusOutlined, FormOutlined } from '@ant-design/icons-vue'
+import { PlusOutlined, CloseOutlined, FormOutlined } from '@ant-design/icons-vue'
 import {
   ref,
   onMounted,
+  onBeforeUnmount,
+  defineComponent,
+  inject,
   computed,
   unref,
   Ref,
@@ -80,6 +83,17 @@ const { onModalOpen } = useDocFormStoreWhitOut()
 const { addGame, searchGame } = useGames()
 
 const searchText = ref('')
+const tableColumns = [
+  {
+    title: '游戏名',
+    key: 'gameName'
+  },
+  {
+    title: '操作',
+    key: 'action',
+    scopedSlots: { customRender: 'action' }
+  }
+]
 
 const onAddGameDocToMyLib = async (item: GameDocItem) => {
   const hasGame = await searchGame(item.gameDocDir)
@@ -117,7 +131,7 @@ async function fetchPageData() {
       functionName: 'getPagePagination',
       modName: 'localGamesDocDatabase',
       data: {
-        page:currentPage.value,
+        page: currentPage.value,
         pageSize: pageSize.value
       }
     })
@@ -138,10 +152,8 @@ onMounted(() => {
 watch(currentPage, () => {
   fetchPageData()
 })
-const onShowSizeChange = (current: number, _pageSize: number) => {
-  currentPage.value = current
-  pageSize.value = _pageSize
-  // fetchPageData()
+const onShowSizeChange = (current: number, pageSize: number) => {
+  fetchPageData()
 }
 
 const GameDocItems = computed(() => {

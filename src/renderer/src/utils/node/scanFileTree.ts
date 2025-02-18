@@ -53,7 +53,7 @@ function getParentDir(dir: string): string | null {
 export function getTreeNode(filePath: string, rootDir: string): Promise<TreeItem[]> {
   // 存储文件详细列表的数组
   const fileDetailedList: TreeItem[] = []
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     // 使用rd.each遍历文件路径
     rd.each(
       filePath,

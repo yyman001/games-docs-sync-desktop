@@ -1,4 +1,4 @@
-import { BackupItem, GameItem } from '@/model'
+import { BackupItem, GameDocItem, GameItem } from '@/model'
 import Dexie from 'dexie'
 export class electronGames extends Dexie {
   backupTable!: Dexie.Table<BackupItem>

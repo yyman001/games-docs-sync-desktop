@@ -17,7 +17,7 @@
       >
         <a-form-item label="SteamId" name="steamId">
           <a-input v-model:value="steamId" />
-          <button @click="getGameInfoForSteamId(steamId)">分析</button>
+          <button :disabled="isPulling" @click="getGameInfoForSteamId(steamId)">分析</button>
         </a-form-item>
 
         <a-form-item label="游戏名" name="gameName">
@@ -87,7 +87,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, unref } from 'vue'
+import { defineOptions, ref, unref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { message } from 'ant-design-vue'
 import { useDocFormStoreWhitOut } from '@/store/doc'
@@ -122,7 +122,7 @@ const {
   getGameInfoForSteamId,
   onModalClose: onCloseFullModal
 } = usePullGame() */
-const getGameInfoForSteamId = (steamId: string) =>{}
+const getGameInfoForSteamId = () =>{}
 const { HOME_DIR, SYSTEM_TYPE } = window.systemInfo
 
 const repetitionGame = ref<any[]>([])
@@ -170,7 +170,7 @@ const onSubmit = async () => {
   }
 }
 
-const onChangeSearchGameName = async () => {
+const onChangeSearchGameName = async (e: Event) => {
   if (unref(isUpdate) || !unref(gameName)) {
     message.warn('请输入游戏名或关键字!')
     return
