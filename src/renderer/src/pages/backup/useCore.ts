@@ -5,6 +5,7 @@ import { useLocalFileStoreWhitOut } from '@/store/localFile'
 import useFile from './useFile'
 
 export default function () {
+  const searchText = ref('') // 搜索文本
   const isUseCloud = ref(false) // 是否使用云同步功能
   // const useConfigStore = useConfigStoreWhitOut()
   const localFileStore = useLocalFileStoreWhitOut()
@@ -85,10 +86,11 @@ export default function () {
   })
 
   const filterList = computed(() => {
-    if (!Array.isArray(unref(fileList))) return []
-    return unref(fileList)
-    if (!unref(searchText)) return unref(fileList)
+    console.log('fileList', unref(fileList))
 
+    if (!Array.isArray(unref(fileList))) return []
+
+    if (!unref(searchText)) return unref(fileList)
     return unref(fileList as any).filter((file: any) => {
       const regExp = new RegExp(unref(searchText) as string, 'i')
       return regExp.test(file.basename)
@@ -117,7 +119,6 @@ export default function () {
   // 文件夹同步态判断 => 文件夹只能判断是否同步完成, 无法判断是需要上传还是下载(因为可能会同时存在2种状态)
   // Bug: 有几率不成功更新
   const getFolderSyncStatus = (item: any) => {
-
     return false
     // 当前文件夹名称
     const gameDocDir = item.basename

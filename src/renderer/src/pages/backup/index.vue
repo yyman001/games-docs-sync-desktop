@@ -12,8 +12,8 @@
       </div>
       <ModalRestore />
     </header>
-    <main class="p-4 overflow-hidden bg-gray-100">
-      <template v-if="!filterList.length">
+    <main class="overflow-hidden p-4 bg-gray-100">
+      <template v-if="filterList.length">
         <FileExplorer>
           <FileItem
             v-for="item in filterList"
@@ -33,7 +33,7 @@
         </FileExplorer>
       </template>
       <template v-else>
-        <div class="grid h-full place-content-center">
+        <div class="grid place-content-center h-full">
           <Empty description="无游戏备份存档文件" :image="simpleImage" />
         </div>
       </template>
@@ -52,6 +52,7 @@ import useCore from './useCore'
 
 const simpleImage = Empty.PRESENTED_IMAGE_DEFAULT
 const {
+  fileList,
   filterList,
   fileOrDirSize,
   getSyncStatus,

@@ -1,20 +1,10 @@
-export interface IpcParameter {
-  // 调用模块名
-  modName?: string
-  // 调用函数名
-  functionName: string
-  data: any
-}
 
-export interface dialogParameter {
-  // 窗口标题
-  title?: string
-  // 打开文件类型, 空则打开"文件夹"
-  openFileType?: string
-}
+import { IpcParameter, dialogParameter } from "../../../types/ipc"
 
 // 渲染进程代码示例
+// @ts-ignore
 const ipcRenderer = window.electron.ipcRenderer
+
 // 发送文件操作请求
 export async function callNodeApi(data: any) {
   const rtx = await ipcRenderer.invoke('nodeApi', data)
@@ -25,9 +15,10 @@ export function callNodesync(data: IpcParameter) {
   const rtx = ipcRenderer.sendSync('ipcSync', data)
   return rtx
 }
+
 export async function callNodeAsync(data: IpcParameter) {
   // 判断数据是否可克隆
-  const isCloneable = (obj) => {
+  const isCloneable = (obj: any): boolean => {
     return obj && (typeof obj === 'object' || Array.isArray(obj)) && !(obj instanceof Date);
   };
 
@@ -41,8 +32,9 @@ export async function callNodeAsync(data: IpcParameter) {
 
 // api: https://www.electronjs.org/zh/docs/latest/api/dialog#dialogshowopendialogbrowserwindow-options
 export const showOpenDialog = async ({ title = '', openFileType = '' } = {} as dialogParameter) => {
-  let filters
-  let properties
+  let filters: { name: string; extensions: string[] }[] | undefined
+  let properties: string[]
+
   if (openFileType === 'rar') {
     filters = [{ name: '压缩存档', extensions: ['zip', 'tar', 'tgz'] }]
     properties = ['openFile']
@@ -60,13 +52,14 @@ export const showOpenDialog = async ({ title = '', openFileType = '' } = {} as d
     modName: 'dialog',
     functionName: 'showOpenDialog',
     data: { title, properties, filters }
-  })
+  } as IpcParameter)
+
   if (canceled) return ''
   return filePaths.pop()
 }
 
 // 发送同步消息，并等待主进程返回结果
-export function getPath(relativePath) {
+export function getPath(relativePath: string): string {
   const result = ipcRenderer.sendSync('sync', relativePath)
   console.log('Resolved Path:', result)
   return result

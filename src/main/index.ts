@@ -10,6 +10,7 @@ import * as tree from '../renderer/src/utils/node/scanFileTree'
 import * as path from '../renderer/src/utils/node/path'
 import * as backup from '../renderer/src/utils/node/backup'
 import * as compressing from '../renderer/src/utils/node/compressing'
+import { IpcParameter } from '../types/ipc'
 
 const APP_HOME_DIR = cwd()
 const modules = {
