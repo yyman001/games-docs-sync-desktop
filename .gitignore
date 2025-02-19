@@ -9,3 +9,4 @@ out
 /games-docs-sync-desktop.code-workspace
 /src/renderer/src/view/
 /temp/*
+/.idea/*

@@ -6,22 +6,10 @@
         <div class="flex-auto text-xl font-bold text-nowrap">G D S</div>
         <div class="flex flex-1 justify-center items-center"><ThemeSwitch /></div>
       </div>
-
       <Menu />
-
       <div class="flex pb-4 mt-auto w-full">
         <div class="flex-auto">
-          <Select>
-            <SelectTrigger>
-              <SelectValue placeholder="选择同步源" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>同步源:</SelectLabel>
-                <SelectItem v-for="item in config" :key="item.name" :value="item.name"> {{ item.name }} </SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+          <ColudSelect />
         </div>
         <div class="flex flex-1 justify-center items-center">
           <ReloadOutlined />
@@ -39,36 +27,7 @@ import Menu from './components/Menu/index.vue'
 import { ReloadOutlined } from '@ant-design/icons-vue'
 import { Gamepad } from 'lucide-vue-next'
 import ThemeSwitch from '@/components/ThemeSwitch/index.vue'
-
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select'
-
-const config = [
-  {
-    "name": "坚果云",
-    "type": "jianguoyun",
-    "url": "https://dav.jianguoyun.com/dav/",
-    "usearname": "yyman001@qq.com",
-    "password": "akuz6vqd5iccz67w",
-    "rootDirectoryName": "games_doc_sync"
-  },
-  {
-    "name": "阿里云",
-    "type": "ali-oss",
-    "accessKeyId": "",
-    "accessKeySecret": "",
-    "bucket": "games-document-sync"
-  }
-]
-
-
+import ColudSelect from '@/components/CloudSelect/index.vue'
 </script>
 
 <style lang="scss">
