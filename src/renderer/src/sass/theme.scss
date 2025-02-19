@@ -1,0 +1,25 @@
+// TODO: 主题配色后期UI更新再定
+:root {
+  // 亮色主题变量
+  --bg-primary: #ffffff;
+  --text-primary: #333333;
+  --text-secondary: #666666;
+  --border-color: #e5e7eb;
+  --hover-bg: #f3f4f6;
+}
+
+// 暗色主题变量
+html.dark {
+  --bg-primary: #1a1b1e;
+  --text-primary: #ffffff;
+  --text-secondary: #9ca3af;
+  --border-color: #374151;
+  --hover-bg: #2d3748;
+}
+
+// 应用主题变量
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color .3s ease, color .3s ease!important;
+}
