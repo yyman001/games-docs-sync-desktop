@@ -2,8 +2,9 @@ import { useObservable, from } from '@vueuse/rxjs'
 import { liveQuery } from 'dexie'
 
 import { electronGamesDatabaseInstance } from '@/utils/db/DexieDB'
-import { GameDatabase } from '@/interface/database'
-import { GameItem, GameDocItem } from '@/model'
+import { GameItem } from '@/types'
+import { GameDatabase } from '@/interfaces/DexieDB'
+
 export function useGames() {
 const gamesTable = new GameDatabase(electronGamesDatabaseInstance, 'gamesTable');
 

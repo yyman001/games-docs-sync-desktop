@@ -1,5 +1,4 @@
 import Database from 'better-sqlite3'
-import fs from 'fs'
 import { getAppPath } from './path'
 
 const sqlFilePath = getAppPath('pub_games_doc.sqlite')

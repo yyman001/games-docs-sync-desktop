@@ -1,6 +1,6 @@
 import { defineStore, storeToRefs } from 'pinia'
 import { computed, ref, unref } from 'vue'
-import { FileItem, WebDavFile } from '@/model'
+import { FileItem, WebDavFile } from '@/types'
 
 export const useLocalFileStore = defineStore('localFile', () => {
 

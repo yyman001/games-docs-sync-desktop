@@ -1,5 +1,5 @@
 
-import { IpcParameter, dialogParameter } from "../../../types/ipc"
+import { IpcParameter, dialogParameter } from "@/types/ipc"
 
 // 渲染进程代码示例
 // @ts-ignore

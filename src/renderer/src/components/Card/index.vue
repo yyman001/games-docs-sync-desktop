@@ -1,5 +1,5 @@
 <template>
-  <div class="box-border relative overflow-hidden card__wrap">
+  <div class="box-border overflow-hidden relative card__wrap">
     <div class="relative card bg-slate-300" :class="cardStyle">
       <div
         class="card__head"
@@ -7,18 +7,18 @@
         :style="{ backgroundImage: `url(${verticalCover(item.steamId)})` }"
       ></div>
       <div class="h-full card__body">
-        <div class="relative w-full h-full overflow-hidden group">
+        <div class="overflow-hidden relative w-full h-full group">
           <!-- Upper Triangle -->
-          <div class="absolute w-full h-full transition-all duration-500 transform -translate-x-full bg-red-500 opacity-0 clip-upper-triangle group-hover:translate-x-0 group-hover:opacity-60 group-hover:border-red-500 group-hover:border group-hover:shadow-red-500/50 group-hover:shadow-md"></div>
+          <div class="absolute w-full h-full bg-red-500 opacity-0 transition-all duration-500 transform -translate-x-full clip-upper-triangle group-hover:translate-x-0 group-hover:opacity-60 group-hover:border-red-500 group-hover:border group-hover:shadow-red-500/50 group-hover:shadow-md"></div>
 
           <!-- Lower Triangle -->
-          <div class="absolute right-0 w-full h-full transition-all duration-500 transform translate-x-full bg-blue-500 opacity-0 clip-lower-triangle group-hover:translate-x-0 group-hover:opacity-50 group-hover:border-red-500 group-hover:border group-hover:shadow-red-500/50 group-hover:shadow-md"></div>
+          <div class="absolute right-0 w-full h-full bg-blue-500 opacity-0 transition-all duration-500 transform translate-x-full clip-lower-triangle group-hover:translate-x-0 group-hover:opacity-50 group-hover:border-red-500 group-hover:border group-hover:shadow-red-500/50 group-hover:shadow-md"></div>
 
-          <div @click.stop="onClick('restore')" class="absolute text-5xl font-bold text-white transition-opacity duration-500 opacity-0 left-6 top-12 group-hover:opacity-100 ">还原</div>
+          <div @click.stop="onClick('restore')" class="absolute left-6 top-12 text-5xl font-bold text-white opacity-0 transition-opacity duration-500 group-hover:opacity-100">还原</div>
 
-          <div @click.stop="onClick('backup')" class="absolute text-5xl font-bold text-white transition-opacity duration-500 opacity-0 right-6 bottom-12 group-hover:opacity-100 ">备份</div>
+          <div @click.stop="onClick('backup')" class="absolute right-6 bottom-12 text-5xl font-bold text-white opacity-0 transition-opacity duration-500 group-hover:opacity-100">备份</div>
         </div>
-        <!-- <div class="card__action backdrop-filter" :class="isActiveClass">
+        <!-- <div class="backdrop-filter card__action" :class="isActiveClass">
           <a class="card__run" :class="appRunStyle" title="运行" @click.stop="onClick('run')">
             <CloseOutlined
               v-if="isTargetGameDoc && appStatus !== 'unstart'"
@@ -59,7 +59,7 @@ import { CaretRightOutlined, CloseOutlined } from '@ant-design/icons-vue'
 import { computed, defineComponent, PropType, ref, toRefs, unref } from 'vue'
 import { generateTimeSummary } from '@/utils/index'
 import { horizontalCover, verticalCover } from '@/utils/steamPrivew'
-import { GameItem } from '@/model'
+import { GameItem } from '@/types'
 
 export type CardEmitItem = [string, GameItem]
 

@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
 import { ref, reactive, computed } from 'vue'
 import { message } from 'ant-design-vue'
-import { SdkConfig } from '@/model'
-import { showOpenDialog, callNodeAsync } from '@/utils/ipc'
 import { camelCase } from 'change-case'
+import { SdkConfig } from '@/types'
+import { showOpenDialog, callNodeAsync } from '@/utils/ipc'
 import { deepCopy } from '@/utils/deepCopy'
 
 export const useCloudStore = defineStore('cloud', () => {

@@ -1,4 +1,4 @@
-import { FileItem } from '@/model'
+import { FileItem } from '@/types/file'
 // https://www.npmjs.com/package/rd
 const rd = require('rd')
 

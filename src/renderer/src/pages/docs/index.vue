@@ -8,14 +8,14 @@
     </header>
 
     <!-- Content -->
-    <main class="p-4 overflow-hidden bg-gray-100">
-      <ScrollArea class="w-full h-full p-4 border rounded-md config-page bg-slate-100">
+    <main class="overflow-hidden p-4 bg-gray-100">
+      <ScrollArea class="p-4 w-full h-full rounded-md border config-page bg-slate-100">
         <div
           :key="record.steamId"
           v-for="record in GameDocItems"
           class="flex justify-between p-4 mb-2"
         >
-          <div class="w-3/5 p-1 bg-white">
+          <div class="p-1 w-3/5 bg-white">
             <img
               :src="horizontalCover(record.steamId, 'schinese')"
               :alt="record.gameName"
@@ -24,7 +24,7 @@
             />
           </div>
 
-          <div class="w-2/5 p-4">
+          <div class="p-4 w-2/5">
             <h2 class="mb-4 text-xl text-black">{{ record.gameName }}</h2>
             <button
               class="px-4 py-2 text-white bg-green-500 rounded hover:bg-green-600"
@@ -49,7 +49,7 @@
       />
       <a-spin
         :spinning="loading"
-        class="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+        class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
       />
     </footer>
   </div>
@@ -74,7 +74,7 @@ import ModalDoc from '@/modal/doc/index.vue'
 
 import { horizontalCover } from '@/utils/steamPrivew'
 import { deepCopy } from '@/utils/deepCopy'
-import { GameItem, GameDocItem } from '@/model'
+import { GameItem, GameDocItem } from '@/types'
 import { callNodeAsync } from '@/utils/ipc'
 import { useDocFormStoreWhitOut } from '@/store/doc'
 import { useGames } from '../games/db'

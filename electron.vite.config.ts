@@ -9,6 +9,11 @@ import autoprefixer from 'autoprefixer'
 
 export default defineConfig({
   main: {
+    resolve: {
+      alias: {
+        '@': resolve(__dirname, 'src')
+      }
+    },
     plugins: [externalizeDepsPlugin()]
   },
   preload: {

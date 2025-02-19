@@ -1,14 +1,15 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia'
 import { computed, provide, ref } from 'vue'
-import { ScrollArea } from '@/components/ui/scroll-area'
 import { Empty, message } from 'ant-design-vue'
+import { ScrollArea } from '@/components/ui/scroll-area'
+
 import Card, { CardEmitItem } from '@/components/Card/index.vue'
 import ModalBackup from '@/modal/backup/index.vue'
 import useModel, { modal } from '@/hooks/useModal'
-import { GameItem } from '@/model'
+import { GameItem } from '@/types'
 import { useGames } from './db'
 import { useConfigStoreWhitOut } from '@/store/config'
-import { storeToRefs } from 'pinia'
 import { callNodesync } from '@/utils/ipc'
 
 const simpleImage = Empty.PRESENTED_IMAGE_DEFAULT
@@ -108,12 +109,12 @@ provide(modal, {
 
 <template>
   <div class="grid grid-rows-[auto,1fr,auto] h-screen w-full relative">
-    <header class="h-24 p-4">
+    <header class="p-4 h-24">
       <h2 class="text-2xl font-bold text-black">我的游戏库</h2>
     </header>
-    <main class="grid p-4 overflow-hidden bg-gray-100">
+    <main class="grid overflow-hidden p-4 bg-gray-100">
       <template v-if="GameItems?.length">
-        <ScrollArea class="w-full h-full border rounded-md config-page bg-slate-100">
+        <ScrollArea class="w-full h-full rounded-md border config-page bg-slate-100">
           <div class="grid grid-cols-4 gap-4">
             <Card
               :key="item.gameName"
@@ -129,7 +130,7 @@ provide(modal, {
         </ScrollArea>
       </template>
       <template v-else>
-        <div class="grid h-full place-content-center">
+        <div class="grid place-content-center h-full">
           <Empty description="未找到游戏" :image="simpleImage" />
         </div>
       </template>

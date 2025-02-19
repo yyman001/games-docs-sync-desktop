@@ -1,7 +1,6 @@
 // 数据库关系图: https://dbdiagram.io/d/60c7496c0c1ff875fcd4bb3c
-import { electronGames } from '@/interface/electronGames'
 import Dexie from 'dexie'
-export const electronGamesDatabaseInstance = new Dexie('electronGames') as electronGames
+export const electronGamesDatabaseInstance = new Dexie('electronGames')
 
 electronGamesDatabaseInstance.version(1).stores({
   backupTable: 'fileName, steamId, gameName, nickName, gameDocDir, fileType',

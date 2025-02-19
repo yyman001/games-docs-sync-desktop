@@ -1,4 +1,6 @@
-// 数据库抽象类
+import { BackupItem, GameItem } from '@/types'
+import Dexie from 'dexie'
+
 export abstract class DexieDatabase {
   abstract addGame(object: any): Promise<any>
   abstract updateGame(updateGameItem: any): Promise<any>
@@ -30,7 +32,21 @@ export class GameDatabase extends DexieDatabase {
   async searchGame(gameDocDir: string) {
     return await this.table.get(gameDocDir)
   }
+
   async getAll() {
     return await this.table.toArray()
+  }
+}
+
+export class electronGames extends Dexie {
+  backupTable!: Dexie.Table<BackupItem>
+  gamesTable!: Dexie.Table<GameItem>
+
+  constructor () {
+    super('electronGames')
+    this.version(1).stores({
+      backupTable: 'fileName, steamId, gameName, nickName, gameDocDir, fileType',
+      gamesTable: 'gameDocDir, steamId, gameName, nickName, systemType'
+    })
   }
 }

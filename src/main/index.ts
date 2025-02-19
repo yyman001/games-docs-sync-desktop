@@ -1,17 +1,17 @@
-import { app, BrowserWindow, ipcMain, dialog, shell } from 'electron'
+// 本文件禁止使用别名@导入文件依赖,会导致编译无法找到文件
 import { join } from 'path'
 import { cwd } from 'process'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import { IpcParameter } from '../renderer/src/utils/ipc'
+import { app, BrowserWindow, ipcMain, dialog, shell } from 'electron'
+import { IpcParameter } from '../renderer/src/types'
 import icon from '../../resources/icon.png?asset'
 import * as scan from '../renderer/src/utils/tools'
 import * as file from '../renderer/src/utils/node/FileClass'
-import { localGamesDocDatabase } from '../renderer/src/utils/node/sqlite'
 import * as tree from '../renderer/src/utils/node/scanFileTree'
 import * as path from '../renderer/src/utils/node/path'
 import * as backup from '../renderer/src/utils/node/backup'
 import * as compressing from '../renderer/src/utils/node/compressing'
-import { IpcParameter } from '../types/ipc'
+import { localGamesDocDatabase } from '../renderer/src/utils/node/sqlite'
 
 const APP_HOME_DIR = cwd()
 const modules = {

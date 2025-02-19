@@ -1,37 +1,9 @@
+import { TreeItem } from '@/types'
 import { formatFileSize } from '../formatFileSize'
 
 /* 创建多选用的树结构 */
 const rd = require('rd')
 const path = require('path')
-
-export interface TreeItem {
-  // '引燃的大坑.wld'
-  basename: string
-  children: TreeItem[] | null
-  depth: number
-  dirname: string | null
-  // '.bak'
-  ext: string
-  // '引燃的大坑.wld.bak'
-  filename: string
-  isLeaf: boolean
-  // 'C:\\Users\\yyman001_cp\\Documents\\My Games\\Terraria\\Worlds\\引燃的大坑.wld.bak'
-  key: string
-  // 'Worlds'
-  parent_dir: string
-  // 'C:\\Users\\yyman001_cp\\Documents\\My Games\\Terraria\\Worlds\\引燃的大坑.wld.bak'
-  path: string
-  // '\\Worlds'
-  relative_parent_path: string
-  // '\\Worlds\\引燃的大坑.wld.bak'
-  relative_path: string
-  // 2990329
-  size: number
-  timeStamp: number
-  // '引燃的大坑.wld'
-  title: string
-  type: 'file' | 'directory'
-}
 
 function getParentDir(dir: string): string | null {
   const parts = dir.split('\\')
@@ -53,7 +25,7 @@ function getParentDir(dir: string): string | null {
 export function getTreeNode(filePath: string, rootDir: string): Promise<TreeItem[]> {
   // 存储文件详细列表的数组
   const fileDetailedList: TreeItem[] = []
-  return new Promise((resolve) => {
+  return new Promise((resolve,reject) => {
     // 使用rd.each遍历文件路径
     rd.each(
       filePath,
