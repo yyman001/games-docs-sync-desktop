@@ -26,8 +26,6 @@ export default defineConfig({
       }
     },
     plugins: [
-      tailwind(),
-      autoprefixer(),
       AutoImport({
         dts: true,
         imports: ['vue', 'vue-router', 'pinia']
@@ -38,6 +36,11 @@ export default defineConfig({
         dirs: ['src/renderer/src/components']
       }),
       vue()
-    ]
+    ],
+    css: {
+      postcss: {
+        plugins: [tailwind(), autoprefixer()]
+      }
+    }
   }
 })
