@@ -11,6 +11,7 @@ import * as tree from '../renderer/src/utils/node/scanFileTree'
 import * as path from '../renderer/src/utils/node/path'
 import * as backup from '../renderer/src/utils/node/backup'
 import * as compressing from '../renderer/src/utils/node/compressing'
+import * as fetchModule from '../renderer/src/utils/node/fetch'
 import { localGamesDocDatabase } from '../renderer/src/utils/node/sqlite'
 
 const APP_HOME_DIR = cwd()
@@ -23,7 +24,8 @@ const modules = {
   tree,
   path,
   backup,
-  compressing
+  compressing,
+  fetchModule
 }
 
 function createWindow(): void {

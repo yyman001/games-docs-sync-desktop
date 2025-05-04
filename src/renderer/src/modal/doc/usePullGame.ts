@@ -3,16 +3,16 @@ import { storeToRefs } from 'pinia'
 import useModal from '@/hooks/useModal'
 import { useDocFormStoreWhitOut } from '@/store/doc'
 import { fullGame, fullGameTable } from '@/utils/pullGame'
-import { ElMessage } from 'element-plus'
-import { useLoadingMask } from '@/hooks/useLoadingMask'
+import { message } from 'ant-design-vue'
+// import { useLoadingMask } from '@/hooks/useLoadingMask'
 
 export const usePullGame = function () {
-  const { showLoadingMask, hideLoadingMask } = useLoadingMask()
+  // const { showLoadingMask, hideLoadingMask } = useLoadingMask()
   const docFrom = useDocFormStoreWhitOut()
   const {
     // TODO: 获取游戏名
     // gameName,
-    gameDocFullPath
+    tempParseGameDocPath
   } = storeToRefs(docFrom)
 
   const { isVisible, onModalOpen, onModalClose } = useModal()
@@ -39,25 +39,22 @@ export const usePullGame = function () {
   const setPullStatus = (status: boolean) => {
     isPulling.value = status
     if (status) {
-      showLoadingMask()
+      // showLoadingMask()
     } else {
-      hideLoadingMask()
+      // hideLoadingMask()
     }
   }
 
   const onClickRow = (record: any) => {
     console.log('onClickRow', record)
     // TODO: 详细更新表单信息
-    gameDocFullPath.value = record.content
+    tempParseGameDocPath.value = record.content
     onModalClose()
   }
 
   const getGameInfoForSteamId = async (steamId: string) => {
     if (!steamId || unref(isPulling)) {
-      ElMessage({
-        message: 'SteamId不能为空!',
-        type: 'error'
-      })
+      message.error('SteamId不能为空!')
       return
     }
     setPullStatus(true)
@@ -65,10 +62,7 @@ export const usePullGame = function () {
     const rtx = await fullGame(steamId)
     setPullStatus(false)
     if (rtx === null) {
-      ElMessage({
-        message: '分析异常!',
-        type: 'error'
-      })
+      message.error('分析异常!')
       return
     }
 
@@ -76,10 +70,7 @@ export const usePullGame = function () {
     dataSource.value = rtx
 
     onModalOpen()
-    ElMessage({
-      message: '分析成功!',
-      type: 'success'
-    })
+    message.success('分析成功!')
   }
 
   return {

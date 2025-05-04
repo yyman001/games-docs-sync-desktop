@@ -17,7 +17,7 @@
       >
         <a-form-item label="SteamId" name="steamId">
           <a-input v-model:value="steamId" />
-          <button :disabled="isPulling" @click="getGameInfoForSteamId(steamId)">分析</button>
+          <button :disabled="isPulling" @click="getGameInfoForSteamId(steamId)">自动识别</button>
         </a-form-item>
 
         <a-form-item label="游戏名" name="gameName">
@@ -29,10 +29,10 @@
         </a-form-item>
 
         <a-form-item label="文件夹存档名" name="gameDocDir">
-          <a-input v-model:value="gameDocDir" />
+          <a-input v-model:value="gameDocDir" disabled/>
         </a-form-item>
 
-        <a-form-item label="<分析>存档路径" name="tempParseGameDocPath">
+        <a-form-item label="<自动分析>存档路径" name="tempParseGameDocPath">
           <a-input v-model:value="tempParseGameDocPath" />
         </a-form-item>
 
@@ -66,11 +66,12 @@
     </a-modal>
 
     <a-modal
-      title="抓取分析的游戏存档信息"
+      title="游戏存档信息"
       :visible="isGameModal"
       :footer="null"
       :maskClosable="false"
       @cancel="onCloseFullModal"
+      width="auto"
       :centered="true"
     >
       <a-table :dataSource="dataSource" :columns="columns" :pagination="false" size="small">
@@ -92,7 +93,7 @@ import { storeToRefs } from 'pinia'
 import { message } from 'ant-design-vue'
 import { useDocFormStoreWhitOut } from '@/store/doc'
 import { callNodeAsync } from '@/utils/ipc'
-// import { usePullGame } from './usePullGame'
+import { usePullGame } from './usePullGame'
 
 defineOptions({
   name: 'modal-doc'
@@ -101,7 +102,6 @@ defineOptions({
 const docFrom = useDocFormStoreWhitOut()
 const {
   isVisible,
-
   isUpdate,
   pathType,
   steamId,
@@ -113,7 +113,7 @@ const {
   tempParseGameDocPath
 } = storeToRefs(docFrom)
 
-/* const {
+const {
   isPulling,
   isGameModal,
   dataSource,
@@ -121,8 +121,8 @@ const {
   onClickRow,
   getGameInfoForSteamId,
   onModalClose: onCloseFullModal
-} = usePullGame() */
-const getGameInfoForSteamId = () =>{}
+} = usePullGame()
+// const getGameInfoForSteamId = () =>{}
 const { HOME_DIR, SYSTEM_TYPE } = window.systemInfo
 
 const repetitionGame = ref<any[]>([])
@@ -181,6 +181,12 @@ const onChangeSearchGameName = async (e: Event) => {
     functionName: 'queryHasGameDoc',
     data: unref(gameName)
   })
+
+  if (rtx.length === 0) {
+    message.warn('未找到游戏文档!')
+    return
+  }
+
   repetitionGame.value = rtx
   console.log('onChangeSearchGameName:', unref(gameName), rtx)
 }

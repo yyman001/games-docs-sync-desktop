@@ -1,4 +1,3 @@
-
 import { IpcParameter, dialogParameter } from "@/types/ipc"
 
 // 渲染进程代码示例
@@ -26,8 +25,15 @@ export async function callNodeAsync(data: IpcParameter) {
     throw new Error("数据不可克隆");
   }
   const clonedData = JSON.parse(JSON.stringify(data));
-  const rtx = await ipcRenderer.invoke('ipcAsync', clonedData)
-  return rtx
+  try {
+    console.log('Sending IPC request:', clonedData);
+    const rtx = await ipcRenderer.invoke('ipcAsync', clonedData)
+    console.log('IPC response received:', rtx);
+    return rtx
+  } catch (error) {
+    console.error('IPC call failed:', error);
+    throw error;
+  }
 }
 
 // api: https://www.electronjs.org/zh/docs/latest/api/dialog#dialogshowopendialogbrowserwindow-options

@@ -2,20 +2,37 @@
   <div class="grid grid-rows-[auto,1fr,auto] h-screen w-full relative">
     <!-- Header -->
     <header class="p-4">
-      <h2 class="text-2xl font-bold text-black">游戏库</h2>
-      <button @click="onModalOpen">+++</button>
+      <h2 class="mb-2 text-2xl font-bold text-black">游戏库</h2>
+      <div class="flex items-center gap-2">
+        <div class="relative items-center max-w-sm">
+          <Input id="search" type="text" placeholder="Search..." class="pl-10" />
+          <span class="absolute inset-y-0 flex items-center justify-center px-2 start-0">
+            <Search class="size-6 text-muted-foreground" />
+          </span>
+        </div>
+        <div>
+          <Button class="h-7" @click="onModalOpen">
+            <Plus class="size-6 text-muted-foreground" />新增游戏
+          </Button>
+        </div>
+        <div class="ml-auto">
+          <Button variant="outline" size="icon">
+            <ArrowDownAZ class="w-4 h-4" />
+          </Button>
+        </div>
+      </div>
       <ModalDoc />
     </header>
 
     <!-- Content -->
-    <main class="overflow-hidden p-4 bg-gray-100">
-      <ScrollArea class="p-4 w-full h-full rounded-md border config-page bg-slate-100">
+    <main class="p-4 overflow-hidden">
+      <ScrollArea class="w-full h-full p-4 config-page">
         <div
           :key="record.steamId"
           v-for="record in GameDocItems"
-          class="flex justify-between p-4 mb-2"
+          class="flex justify-between p-3 mb-4 rounded-md master-primary-color"
         >
-          <div class="p-1 w-3/5 bg-white">
+          <div class="w-2/5 overflow-hidden bg-white rounded-md">
             <img
               :src="horizontalCover(record.steamId, 'schinese')"
               :alt="record.gameName"
@@ -24,7 +41,7 @@
             />
           </div>
 
-          <div class="p-4 w-2/5">
+          <div class="w-3/5 p-4">
             <h2 class="mb-4 text-xl text-black">{{ record.gameName }}</h2>
             <button
               class="px-4 py-2 text-white bg-green-500 rounded hover:bg-green-600"
@@ -40,6 +57,7 @@
     <!-- Footer -->
     <footer class="flex justify-center p-4 mb-2">
       <a-pagination
+        class="master-primary-color"
         v-model:current="currentPage"
         v-model:pageSize="pageSize"
         show-size-changer
@@ -49,7 +67,7 @@
       />
       <a-spin
         :spinning="loading"
-        class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+        class="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
       />
     </footer>
   </div>
@@ -57,8 +75,11 @@
 
 <script lang="ts" setup>
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
 import { message } from 'ant-design-vue'
 import { PlusOutlined, CloseOutlined, FormOutlined } from '@ant-design/icons-vue'
+import { Search, Plus, FolderSearch, Menu, ArrowDownAZ, RefreshCw } from 'lucide-vue-next'
 import {
   ref,
   onMounted,
@@ -102,7 +123,7 @@ const onAddGameDocToMyLib = async (item: GameDocItem) => {
     return
   }
 
-  console.log('item', item);
+  console.log('item', item)
   // todo: GameDocItem 改为 GameItem
   const rtx = await addGame(deepCopy(item))
   console.log(rtx)
