@@ -1,5 +1,5 @@
 <template>
-  <fieldset class="fieldset">
+  <fieldset class="fieldset rounded-md">
     <legend>{{ title }}</legend>
     <slot></slot>
   </fieldset>
@@ -18,12 +18,11 @@ export default {
 </script>
 
 <style lang="scss">
-@import "../../sass/_var.scss";
 .fieldset {
   margin-bottom: 10px;
   padding: 15px;
-  color: $color-font-selected;
-  border: 1px solid #e8e8e8;
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
 
   legend {
     margin: 0;

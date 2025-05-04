@@ -29,7 +29,7 @@
         </a-form-item>
 
         <a-form-item label="文件夹存档名" name="gameDocDir">
-          <a-input v-model:value="gameDocDir" disabled/>
+          <a-input v-model:value="gameDocDir" disabled />
         </a-form-item>
 
         <a-form-item label="<自动分析>存档路径" name="tempParseGameDocPath">
@@ -196,7 +196,7 @@ const onChangeSearchGameName = async (e: Event) => {
 .doc-form .ant-form-item {
   margin-bottom: 14px;
 }
-.doc-form .ant-input[disabled]  {
+.doc-form .ant-input[disabled] {
   font-weight: bold;
   color: rgb(0 0 0 / 50%);
 }

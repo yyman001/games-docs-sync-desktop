@@ -3,6 +3,9 @@ import { storeToRefs } from 'pinia'
 import { computed, provide, ref } from 'vue'
 import { Empty, message } from 'ant-design-vue'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Search, Plus, FolderSearch, Menu, ArrowDownAZ, RefreshCw } from 'lucide-vue-next'
 
 import Card, { CardEmitItem } from '@/components/Card/index.vue'
 import ModalBackup from '@/modal/backup/index.vue'
@@ -109,12 +112,37 @@ provide(modal, {
 
 <template>
   <div class="grid grid-rows-[auto,1fr,auto] h-screen w-full relative">
-    <header class="p-4 h-24">
-      <h2 class="text-2xl font-bold text-black">我的游戏库</h2>
+    <header class="p-4">
+      <h2 class="mb-2 text-2xl font-bold text-black">我的游戏库</h2>
+      <div class="flex items-center gap-2">
+        <div class="relative items-center max-w-sm">
+          <Input id="search" type="text" placeholder="Search..." class="pl-10" />
+          <span class="absolute inset-y-0 flex items-center justify-center px-2 start-0">
+            <Search class="size-6 text-muted-foreground" />
+          </span>
+        </div>
+        <Button class="h-8 text-base button">
+          <Plus class="size-6 text-muted-foreground" />新增游戏
+        </Button>
+        <div class="ml-auto">
+          <Button variant="outline" size="icon">
+            <Menu class="w-4 h-4" />
+          </Button>
+          <Button variant="outline" size="icon">
+            <FolderSearch class="w-4 h-4" />
+          </Button>
+          <Button variant="outline" size="icon">
+            <ArrowDownAZ class="w-4 h-4" />
+          </Button>
+          <Button variant="outline" size="icon">
+            <RefreshCw class="w-4 h-4" />
+          </Button>
+        </div>
+      </div>
     </header>
-    <main class="grid overflow-hidden p-4 bg-gray-100">
+    <main class="grid p-4 overflow-hidden">
       <template v-if="GameItems?.length">
-        <ScrollArea class="w-full h-full rounded-md border config-page bg-slate-100">
+        <ScrollArea class="w-full h-full rounded-md config-page">
           <div class="grid grid-cols-4 gap-4">
             <Card
               :key="item.gameName"
@@ -130,7 +158,7 @@ provide(modal, {
         </ScrollArea>
       </template>
       <template v-else>
-        <div class="grid place-content-center h-full">
+        <div class="grid h-full place-content-center">
           <Empty description="未找到游戏" :image="simpleImage" />
         </div>
       </template>

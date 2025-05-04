@@ -6,16 +6,16 @@
         :to="item.path"
         @click.stop="onMenuSelected(item)"
       >
-        <Button
-          class="flex justify-between w-full"
-          :variant="selectedKeys === item.key ? '' : 'ghost'"
+        <button
+          class="flex justify-between w-full build-better-button"
+          :class="selectedKeys === item.key ? 'button-active' : ''"
         >
           <AppstoreOutlined v-if="item.icon === 'home'" class="menu__item-icon" />
           <FolderOutlined v-if="item.icon === 'save'" class="menu__item-icon" />
           <AppstoreAddOutlined v-if="item.icon === 'appstore'" class="menu__item-icon" />
           <SettingOutlined v-if="item.icon === 'setting'" class="menu__item-icon" />
           <span class="font-bold"> {{ item.name }} </span>
-        </Button>
+        </button>
       </router-link>
     </div>
   </div>
@@ -29,7 +29,6 @@ import {
   AppstoreAddOutlined,
   SettingOutlined
 } from '@ant-design/icons-vue'
-import { Button } from '@/components/ui/button'
 
 const selectedKeys = ref('games')
 const menuList = ref([
@@ -74,7 +73,6 @@ const onMenuSelected = (selectedItem: any) => {
 </script>
 
 <style lang="scss" scoped>
-@import '@/sass/catppuccin.scss';
 
 .menu {
   width: 100%;

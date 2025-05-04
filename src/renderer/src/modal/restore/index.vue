@@ -45,7 +45,7 @@
         >
           <template #addonAfter>
             <a-tooltip placement="left" title="打开存档文件">
-              <FolderOpenOutlined @click="openExternal(backupFilePath)"/>
+              <FolderOpenOutlined @click="openExternal(backupFilePath)" />
             </a-tooltip>
           </template>
         </a-input>

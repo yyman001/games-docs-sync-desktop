@@ -1,0 +1,23 @@
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  background-color: var(--bg-primary)!important;
+  color: var(--button-text)!important;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  box-shadow: none;
+  cursor: pointer;
+  outline: 2px solid transparent;
+  transition: all 0.3s ease;
+
+  // &:hover,
+  // &.button-active {
+  //   background-color: var(--button-hover-bg);
+  //   border-color: var(--button-hover-border);
+  //   box-shadow: var(--button-hover-shadow);
+  //   outline: 2px solid #222222;
+  //   color: #333;
+  // }
+}

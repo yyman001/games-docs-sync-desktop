@@ -1,24 +1,33 @@
 <template>
-  <div class="box-border overflow-hidden relative card__wrap">
-    <div class="relative card bg-slate-300" :class="cardStyle">
-      <div
-        class="card__head"
-        :class="modeStyle"
-        :style="{ backgroundImage: `url(${verticalCover(item.steamId)})` }"
-      ></div>
-      <div class="h-full card__body">
-        <div class="overflow-hidden relative w-full h-full group">
-          <!-- Upper Triangle -->
-          <div class="absolute w-full h-full bg-red-500 opacity-0 transition-all duration-500 transform -translate-x-full clip-upper-triangle group-hover:translate-x-0 group-hover:opacity-60 group-hover:border-red-500 group-hover:border group-hover:shadow-red-500/50 group-hover:shadow-md"></div>
+	<div class="box-border overflow-hidden relative card__wrap master-primary-color rounded-md">
+		<div class="relative card" :class="cardStyle">
+			<div
+				class="card__head overflow-hidden"
+				:class="modeStyle"
+				:style="{ backgroundImage: `url(${verticalCover(item.steamId)})` }"></div>
+			<div class="h-full card__body">
+				<div class="overflow-hidden relative w-full h-full group">
+					<!-- Upper Triangle -->
+					<div
+						class="absolute w-full h-full bg-red-500 opacity-0 transition-all duration-500 transform -translate-x-full clip-upper-triangle group-hover:translate-x-0 group-hover:opacity-60 group-hover:border-red-500 group-hover:border group-hover:shadow-red-500/50 group-hover:shadow-md"></div>
 
-          <!-- Lower Triangle -->
-          <div class="absolute right-0 w-full h-full bg-blue-500 opacity-0 transition-all duration-500 transform translate-x-full clip-lower-triangle group-hover:translate-x-0 group-hover:opacity-50 group-hover:border-red-500 group-hover:border group-hover:shadow-red-500/50 group-hover:shadow-md"></div>
+					<!-- Lower Triangle -->
+					<div
+						class="absolute right-0 w-full h-full bg-blue-500 opacity-0 transition-all duration-500 transform translate-x-full clip-lower-triangle group-hover:translate-x-0 group-hover:opacity-50 group-hover:border-red-500 group-hover:border group-hover:shadow-red-500/50 group-hover:shadow-md"></div>
 
-          <div @click.stop="onClick('restore')" class="absolute left-6 top-12 text-5xl font-bold text-white opacity-0 transition-opacity duration-500 group-hover:opacity-100">还原</div>
+					<div
+						@click.stop="onClick('restore')"
+						class="absolute left-6 top-12 text-5xl font-bold text-white opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+						还原
+					</div>
 
-          <div @click.stop="onClick('backup')" class="absolute right-6 bottom-12 text-5xl font-bold text-white opacity-0 transition-opacity duration-500 group-hover:opacity-100">备份</div>
-        </div>
-        <!-- <div class="backdrop-filter card__action" :class="isActiveClass">
+					<div
+						@click.stop="onClick('backup')"
+						class="absolute right-6 bottom-12 text-5xl font-bold text-white opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+						备份
+					</div>
+				</div>
+				<!-- <div class="backdrop-filter card__action" :class="isActiveClass">
           <a class="card__run" :class="appRunStyle" title="运行" @click.stop="onClick('run')">
             <CloseOutlined
               v-if="isTargetGameDoc && appStatus !== 'unstart'"
@@ -34,12 +43,12 @@
             <div class="info__text">总数: {{ generateTimeSummary(item.playtime || 0) }}</div>
           </div>
         </div> -->
-      </div>
+			</div>
 
-      <!-- <a class="card__editor" title="编辑" @click.stop="onClick('editor')"></a>
+			<!-- <a class="card__editor" title="编辑" @click.stop="onClick('editor')"></a>
       <a class="card__del" title="删除" @click.stop="onClick('del')"></a> -->
 
-      <!-- <div class="card__buttons">
+			<!-- <div class="card__buttons">
         <a-button type="danger" size="small" @click.stop="onClick('restore')">还原</a-button>
         <a-button
           :disabled="!hasGameDoc"
@@ -49,350 +58,339 @@
           >备份</a-button
         >
       </div> -->
-    </div>
-    <div class="card-name text-ellipsis">{{ item.nickName }}</div>
-  </div>
+		</div>
+		<div class="card-name text-xm text-ellipsis p-2 flex justify-center items-center">{{ item.nickName }}</div>
+	</div>
 </template>
 
 <script lang="ts">
-import { CaretRightOutlined, CloseOutlined } from '@ant-design/icons-vue'
-import { computed, defineComponent, PropType, ref, toRefs, unref } from 'vue'
-import { generateTimeSummary } from '@/utils/index'
-import { horizontalCover, verticalCover } from '@/utils/steamPrivew'
-import { GameItem } from '@/types'
+	import { CaretRightOutlined, CloseOutlined } from '@ant-design/icons-vue'
+	import { computed, defineComponent, PropType, ref, toRefs, unref } from 'vue'
+	import { generateTimeSummary } from '@/utils/index'
+	import { horizontalCover, verticalCover } from '@/utils/steamPrivew'
+	import { GameItem } from '@/types'
 
-export type CardEmitItem = [string, GameItem]
+	export type CardEmitItem = [string, GameItem]
 
-export default defineComponent({
-  components: { CaretRightOutlined, CloseOutlined },
-  props: {
-    hasGameDoc: {
-      type: Boolean,
-      default: false
-    },
-    hasGamePath: {
-      type: Boolean,
-      default: false
-    },
-    appStatus: {
-      type: String,
-      default: ''
-    },
-    appName: {
-      type: String,
-      default: ''
-    },
-    item: {
-      required: true,
-      type: Object as PropType<GameItem>
-    }
-  },
+	export default defineComponent({
+		components: { CaretRightOutlined, CloseOutlined },
+		props: {
+			hasGameDoc: {
+				type: Boolean,
+				default: false
+			},
+			hasGamePath: {
+				type: Boolean,
+				default: false
+			},
+			appStatus: {
+				type: String,
+				default: ''
+			},
+			appName: {
+				type: String,
+				default: ''
+			},
+			item: {
+				required: true,
+				type: Object as PropType<GameItem>
+			}
+		},
 
-  setup(props, { emit }) {
-    const { hasGamePath, hasGameDoc, item, appStatus, appName } = toRefs(props)
-    const mode = ref<string>('vertical')
+		setup(props, { emit }) {
+			const { hasGamePath, hasGameDoc, item, appStatus, appName } = toRefs(props)
+			const mode = ref<string>('vertical')
 
-    const modeStyle = computed(() => {
-      return `is-${unref(mode)}`
-    })
+			const modeStyle = computed(() => {
+				return `is-${unref(mode)}`
+			})
 
-    const cardStyle = computed(() => {
-      return [
-        unref(hasGamePath) ? '' : 'is-empty',
-        `card--normal-shadow${unref(hasGamePath) ? '' : '__empty'}`
-      ]
-    })
+			const cardStyle = computed(() => {
+				return [unref(hasGamePath) ? '' : 'is-empty', `card--normal-shadow${unref(hasGamePath) ? '' : '__empty'}`]
+			})
 
-    const isTargetGameDoc = computed(() => {
-      return unref(appName) === unref(item).gameDocDir
-    })
+			const isTargetGameDoc = computed(() => {
+				return unref(appName) === unref(item).gameDocDir
+			})
 
-    const isLoading = computed(() => {
-      return unref(appStatus) === 'loading'
-    })
+			const isLoading = computed(() => {
+				return unref(appStatus) === 'loading'
+			})
 
-    const appRunStyle = computed(() => {
-      // TODO: 判断是否存在游戏路径配置,才可以运行游戏
-      return [
-        unref(isLoading) && unref(isTargetGameDoc) ? 'card__run--started' : 'card__run--unstart'
-      ]
-    })
+			const appRunStyle = computed(() => {
+				// TODO: 判断是否存在游戏路径配置,才可以运行游戏
+				return [unref(isLoading) && unref(isTargetGameDoc) ? 'card__run--started' : 'card__run--unstart']
+			})
 
-    const isActiveClass = computed(() => {
-      return [unref(isLoading) && unref(isTargetGameDoc) ? 'is-active' : '']
-    })
+			const isActiveClass = computed(() => {
+				return [unref(isLoading) && unref(isTargetGameDoc) ? 'is-active' : '']
+			})
 
-    const onClick = (type: string) => {
-      emit('handleClick', [type, unref(item)])
-    }
+			const onClick = (type: string) => {
+				emit('handleClick', [type, unref(item)])
+			}
 
-    return {
-      mode,
-      modeStyle,
-      cardStyle,
-      appRunStyle,
-      isActiveClass,
-      isTargetGameDoc,
+			return {
+				mode,
+				modeStyle,
+				cardStyle,
+				appRunStyle,
+				isActiveClass,
+				isTargetGameDoc,
 
-      onClick,
+				onClick,
 
-      horizontalCover,
-      verticalCover,
-      generateTimeSummary
-    }
-  }
-})
+				horizontalCover,
+				verticalCover,
+				generateTimeSummary
+			}
+		}
+	})
 </script>
 
 <style type="text/scss" lang="scss">
-// box-shadow-demo: https://getcssscan.com/css-box-shadow-examples
-.card {
-  &--border-shadow {
-    box-shadow:
-      #fcfcfc 0px 0px 0px 2px,
-      #141416 0px 0px 0px 4px,
-      rgba(6, 24, 44, 0.65) 0px 4px 6px -1px,
-      rgba(255, 255, 255, 0.08) 0px 1px 0px inset;
-  }
+	// box-shadow-demo: https://getcssscan.com/css-box-shadow-examples
+	.card {
+		&--border-shadow {
+			box-shadow:
+				#fcfcfc 0px 0px 0px 2px,
+				#141416 0px 0px 0px 4px,
+				rgba(6, 24, 44, 0.65) 0px 4px 6px -1px,
+				rgba(255, 255, 255, 0.08) 0px 1px 0px inset;
+		}
 
-  &--border-shadow__empty {
-    box-shadow:
-      #fcfcfc 0px 0px 0px 2px,
-      #d9d9d9 0px 0px 0px 4px,
-      rgba(6, 24, 44, 0.65) 0px 4px 6px -1px,
-      rgba(255, 255, 255, 0.08) 0px 1px 0px inset;
-  }
+		&--border-shadow__empty {
+			box-shadow:
+				#fcfcfc 0px 0px 0px 2px,
+				#d9d9d9 0px 0px 0px 4px,
+				rgba(6, 24, 44, 0.65) 0px 4px 6px -1px,
+				rgba(255, 255, 255, 0.08) 0px 1px 0px inset;
+		}
 
-  &--normal-shadow {
-    box-shadow:
-      rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
-      rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
-  }
+		&--normal-shadow {
+			box-shadow:
+				rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+				rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+		}
 
-  // 无存档显示灰色图
-  &.is-empty {
-    filter: grayscale(100%);
-  }
+		// 无存档显示灰色图
+		&.is-empty {
+			filter: grayscale(100%);
+		}
 
-  &__editor {
-    position: absolute;
-    top: 0;
-    left: -100%;
-    padding: 0.25em;
-    font-size: 1.2em;
-    cursor: pointer;
-    color: #909399;
-    opacity: 0.5;
-    transition: all 0.4s ease-in-out;
+		&__editor {
+			position: absolute;
+			top: 0;
+			left: -100%;
+			padding: 0.25em;
+			font-size: 1.2em;
+			cursor: pointer;
+			color: #909399;
+			opacity: 0.5;
+			transition: all 0.4s ease-in-out;
 
-    &:hover {
-      color: #24282f;
-    }
-  }
+			&:hover {
+				color: #24282f;
+			}
+		}
 
-  &__del {
-    position: absolute;
-    top: 0;
-    right: -100%;
-    padding: 0.25em;
-    font-size: 1.2em;
-    cursor: pointer;
-    color: #909399;
-    opacity: 0.5;
-    transition: all 0.4s ease-in-out;
+		&__del {
+			position: absolute;
+			top: 0;
+			right: -100%;
+			padding: 0.25em;
+			font-size: 1.2em;
+			cursor: pointer;
+			color: #909399;
+			opacity: 0.5;
+			transition: all 0.4s ease-in-out;
 
-    &:hover {
-      color: #24282f;
-    }
-  }
+			&:hover {
+				color: #24282f;
+			}
+		}
 
-  &__action {
-    display: flex;
-    padding: 0.5em;
+		&__action {
+			display: flex;
+			padding: 0.5em;
 
-    opacity: 0;
-    visibility: hidden;
+			opacity: 0;
+			visibility: hidden;
 
-    &.is-active {
-      opacity: 1;
-      visibility: visible;
-    }
-  }
+			&.is-active {
+				opacity: 1;
+				visibility: visible;
+			}
+		}
 
-  &__run {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+		&__run {
+			position: relative;
+			display: flex;
+			justify-content: center;
+			align-items: center;
 
-    margin-right: 6%;
-    padding: 8%;
-    border-radius: 4px;
-    background: #fff;
+			margin-right: 6%;
+			padding: 8%;
+			border-radius: 4px;
+			background: #fff;
 
-    transition: all 0.4s ease-in-out;
+			transition: all 0.4s ease-in-out;
 
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      right: 0;
-      left: 0;
-      bottom: 0;
+			&::before {
+				content: '';
+				position: absolute;
+				top: 0;
+				right: 0;
+				left: 0;
+				bottom: 0;
 
-      box-shadow:
-        -1px -1px 5px -1px rgb(0 0 0 / 46%),
-        2px 2px 5px 0px rgb(0 0 0 / 46%);
-    }
+				box-shadow:
+					-1px -1px 5px -1px rgb(0 0 0 / 46%),
+					2px 2px 5px 0px rgb(0 0 0 / 46%);
+			}
 
-    // 未启动
-    &--unstart,
+			// 未启动
+			&--unstart,
     // 启动中
     &--starting {
-      box-shadow: inset 0 0 30px 20px #32bc40;
-    }
-    // 已启动
-    &--started {
-      // background: #1e81ad;
-      box-shadow: inset 0 0 30px 20px #1e81ad;
-    }
-  }
+				box-shadow: inset 0 0 30px 20px #32bc40;
+			}
+			// 已启动
+			&--started {
+				// background: #1e81ad;
+				box-shadow: inset 0 0 30px 20px #1e81ad;
+			}
+		}
 
-  &:hover {
-    .card__action {
-      opacity: 1;
-      visibility: visible;
-    }
+		&:hover {
+			.card__action {
+				opacity: 1;
+				visibility: visible;
+			}
 
-    .card__editor {
-      opacity: 1;
-      left: 0;
-    }
+			.card__editor {
+				opacity: 1;
+				left: 0;
+			}
 
-    .card__del {
-      opacity: 1;
-      right: 0;
-    }
+			.card__del {
+				opacity: 1;
+				right: 0;
+			}
 
-    .card__buttons {
-      top: 100%;
-      opacity: 1;
-      visibility: visible;
-    }
-  }
+			.card__buttons {
+				top: 100%;
+				opacity: 1;
+				visibility: visible;
+			}
+		}
 
-  &__head {
-    background-repeat: no-repeat;
-    background-position: 50%;
-    background-size: cover;
+		&__head {
+			background-repeat: no-repeat;
+			background-position: 50%;
+			background-size: cover;
 
-    .is-horizontal {
-      padding-top: 56%;
-    }
+			.is-horizontal {
+				padding-top: 56%;
+			}
 
-    &.is-vertical {
-      padding-top: 150%;
-    }
-  }
+			&.is-vertical {
+				padding-top: 150%;
+			}
+		}
 
-  &__body {
-    box-sizing: border-box;
-    position: absolute;
-    left: 0;
-    bottom: 0;
+		&__body {
+			box-sizing: border-box;
+			position: absolute;
+			left: 0;
+			bottom: 0;
 
-    width: 100%;
-    color: #ffffff;
-  }
+			width: 100%;
+			color: #ffffff;
+		}
 
-  &__info {
-    position: absolute;
-    box-sizing: border-box;
-    left: 0;
-    bottom: 0;
+		&__info {
+			position: absolute;
+			box-sizing: border-box;
+			left: 0;
+			bottom: 0;
 
-    padding: 6% 9%;
-    width: 100%;
-    background: linear-gradient(315deg, #213c55 5%, #016968 95%);
-  }
+			padding: 6% 9%;
+			width: 100%;
+			background: linear-gradient(315deg, #213c55 5%, #016968 95%);
+		}
 
-  &__name {
-    padding-bottom: 0.3em;
-    font-weight: bold;
-    font-size: 1.2em;
-    text-align: justify;
-    word-break: break-all;
-  }
+		&__name {
+			word-break: break-all;
+		}
 
-  &__buttons {
-    display: flex;
-    justify-content: space-between;
+		&__buttons {
+			display: flex;
+			justify-content: space-between;
 
-    position: absolute;
-    left: 0;
-    top: 80%;
+			position: absolute;
+			left: 0;
+			top: 80%;
 
-    width: 100%;
+			width: 100%;
 
-    opacity: 0;
-    visibility: hidden;
+			opacity: 0;
+			visibility: hidden;
 
-    // transition: all 0.3s ease-in;
+			// transition: all 0.3s ease-in;
 
-    button {
-      display: block;
-      width: 50%;
-      padding: 0.2em 0;
-      height: auto;
-    }
-  }
+			button {
+				display: block;
+				width: 50%;
+				padding: 0.2em 0;
+				height: auto;
+			}
+		}
 
-  &__label-time {
-    color: #959595;
-    font-size: 12px;
+		&__label-time {
+			color: #959595;
+			font-size: 12px;
 
-    i {
-      font-style: normal;
-      color: #fff;
-      white-space: nowrap;
-    }
-  }
-}
+			i {
+				font-style: normal;
+				color: #fff;
+				white-space: nowrap;
+			}
+		}
+	}
 
-.card__game-info {
-  font-size: 12px;
-}
-.info__title {
-  color: rgb(255 255 255 / 90%);
-}
-.info__text {
-  color: rgb(255 255 255 / 60%);
-}
+	.card__game-info {
+		font-size: 12px;
+	}
+	.info__title {
+		color: rgb(255 255 255 / 90%);
+	}
+	.info__text {
+		color: rgb(255 255 255 / 60%);
+	}
 
-.card-name {
-  margin-top: 8px;
-  font-size: 13px;
-  color: #000;
-}
+	.card-name {
+		color: var(--text-color);
+	}
 
-.ellipsis {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+	.ellipsis {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
 
-.backdrop-filter {
-  backdrop-filter: blur(10px);
-  box-shadow: inset 0 0 75px -30px #e6f7ff;
-}
+	.backdrop-filter {
+		backdrop-filter: blur(10px);
+		box-shadow: inset 0 0 75px -30px #e6f7ff;
+	}
 
-/* Upper-left triangle */
-.clip-upper-triangle {
-  clip-path: polygon(0 0, 100% 0, 0 100%);
-}
+	/* Upper-left triangle */
+	.clip-upper-triangle {
+		clip-path: polygon(0 0, 100% 0, 0 100%);
+	}
 
-/* Lower-right triangle */
-.clip-lower-triangle {
-  clip-path: polygon(100% 100%, 100% 0, 0 100%);
-}
+	/* Lower-right triangle */
+	.clip-lower-triangle {
+		clip-path: polygon(100% 100%, 100% 0, 0 100%);
+	}
 </style>

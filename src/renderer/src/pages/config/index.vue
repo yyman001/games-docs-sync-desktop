@@ -63,18 +63,16 @@ const setCustomTempPath = async () => {
     <header class="p-4">
       <h2 class="text-2xl font-bold text-black">配置</h2>
     </header>
-    <main class="p-4 overflow-hidden bg-gray-100">
-      <ScrollArea class="w-full h-full border rounded-md config-page bg-slate-100">
+    <main class="p-4 overflow-hidden">
+      <ScrollArea class="w-full h-full rounded-md config-page">
         <template v-for="{ value, name } in tabs" :key="value">
-          <Card class="mb-4">
-            <CardHeader>
-              <CardTitle>{{ name }}</CardTitle>
-              <CardDescription v-if="value === 'backup'"
-                >默认操作目录在主应用目录下</CardDescription
-              >
-            </CardHeader>
-            <CardContent>
-              <template v-if="value === 'base'"> <a-checkbox disabled> 随开机启动 </a-checkbox> </template>
+          <div class="mb-4 p-4 master-primary-color overflow-hidden rounded-md">
+            <h3 class="text-xl">{{ name }}</h3>
+            <p class="text-base" v-if="value === 'backup'">默认操作目录在主应用目录下</p>
+            <div class="card_content">
+              <template v-if="value === 'base'">
+                <a-checkbox disabled> 随开机启动 </a-checkbox>
+              </template>
               <template v-else-if="value === 'backup'">
                 <field-set-group title="临时操作路径">
                   <div style="margin-bottom: 16px">
@@ -214,8 +212,8 @@ const setCustomTempPath = async () => {
                 </field-set-group></template
               >
               <template v-else-if="value === 'about'"> 这是一个免费开源程序 </template>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </template>
       </ScrollArea>
     </main>

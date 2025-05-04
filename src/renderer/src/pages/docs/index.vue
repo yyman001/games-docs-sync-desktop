@@ -11,8 +11,8 @@
           </span>
         </div>
         <div>
-          <Button class="h-7" @click="onModalOpen">
-            <Plus class="size-6 text-muted-foreground" />新增游戏
+          <Button class="h-8 text-base button" @click="onModalOpen">
+            <Plus class="size-6 text-muted-foreground" />新增存档模板
           </Button>
         </div>
         <div class="ml-auto">
@@ -47,7 +47,7 @@
               class="px-4 py-2 text-white bg-green-500 rounded hover:bg-green-600"
               @click="onAddGameDocToMyLib(record)"
             >
-              添加到游戏库
+              添加到我的游戏库
             </button>
           </div>
         </div>
