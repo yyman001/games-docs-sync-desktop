@@ -114,11 +114,12 @@ export async function outputJson({
  * @param dir_path 目录的路径，用于指定要读取的目录
  * @returns 返回一个字符串数组，包含指定目录中的所有文件和子目录名
  */
-export function readdirSync(dir_path: string) {
+export function readdirSync(dir_path: string): string[] | undefined {
   try {
     return fs.readdirSync(dir_path)
   } catch (error) {
     console.error(error)
+    return undefined
   }
 }
 
@@ -129,7 +130,7 @@ export function readdirSync(dir_path: string) {
  * @param filter_funtion 可选的过滤函数，用于决定哪些文件或目录要复制
  * @returns 返回一个数组，第一个元素是错误对象（如果有的话），第二个元素是布尔值，表示复制是否成功
  */
-export async function copy(copy_path: string, save_path: string, filter_funtion?: Function) {
+export async function copy(copy_path: string, save_path: string, filter_funtion?: fs.CopyFilterSync): Promise<[Error | null, boolean]> {
   try {
     // 日志：显示复制的源路径和目标路径
     console.log('copy_path:', copy_path)
@@ -150,7 +151,7 @@ export async function copy(copy_path: string, save_path: string, filter_funtion?
     // todo: 处理错误：记录错误信息到控制台，未来将实现记录到日志文件
     console.error(err)
     // 返回错误状态
-    return [err, false]
+    return [err as Error, false]
   }
 }
 
@@ -160,7 +161,7 @@ export async function copy(copy_path: string, save_path: string, filter_funtion?
  * @param {string} destDir - 目标目录路径
  * @param {Array<string>} filterFiles - 需要过滤掉的文件列表（相对路径）
  */
-export async function copyWithFilter(srcDir: string, destDir: string, filterFiles: string[]) {
+export async function copyWithFilter(srcDir: string, destDir: string, filterFiles: string[]): Promise<[Error | null, boolean]> {
   if (!srcDir || !destDir) {
     throw new Error('Invalid path provided')
   }
@@ -168,7 +169,7 @@ export async function copyWithFilter(srcDir: string, destDir: string, filterFile
   const normalizedFilterFiles = filterFiles.map((file) => path.resolve(file))
 
   // 自定义过滤器函数
-  const filter = (src: string) => {
+  const filter: fs.CopyFilterSync = (src: string): boolean => {
     const normalizedSrc = path.resolve(src)
     try {
       const stats = fs.statSync(normalizedSrc)
@@ -185,6 +186,7 @@ export async function copyWithFilter(srcDir: string, destDir: string, filterFile
         // 如果是文件，检查是否在需要复制的文件列表中
         return normalizedFilterFiles.includes(normalizedSrc)
       }
+      return false
     } catch (error) {
       console.error(`Error reading path: ${normalizedSrc}`, error)
       return false // 如果读取失败，跳过该文件或文件夹
@@ -195,8 +197,8 @@ export async function copyWithFilter(srcDir: string, destDir: string, filterFile
     await fs.copy(srcDir, destDir, { filter })
     return [null, true]
   } catch (error) {
-    console.log(error)
-    return [err, false]
+    console.error(error)
+    return [error as Error, false]
   }
 }
 

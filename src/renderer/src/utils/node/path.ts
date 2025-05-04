@@ -12,10 +12,10 @@ export const getPath = (params: string[]) => {
 }
 
 // 提取路径中的环境变量
-export const extractVariables = (path) => {
+export const extractVariables = (path: string): string => {
   const regex = /%([^%]+)%/g
-  const matches = []
-  let match
+  const matches: string[] = []
+  let match: RegExpExecArray | null
 
   while ((match = regex.exec(path)) !== null) {
     matches.push(match[1]) // 提取 % 里面的内容
@@ -82,7 +82,7 @@ export const parsePath = (path: string, homeDir: string) => {
   console.log('normalizedPath', normalizedPath)
   console.log('userProfilePath', userProfilePath)
 
-  const pathTypeX = [
+  const pathTypeX: PathType[] = [
     {
       parent: 'AppData',
       children: [
@@ -111,17 +111,15 @@ export const parsePath = (path: string, homeDir: string) => {
 
   for (const type of pathTypeX) {
     if (normalizedPath.indexOf(type.parent) !== -1) {
-      result = type.key
+      result = type.key as string // 记录大类
 
-      if (type.children === null) {
-        break
-      }
-
-      for (const child of type.children) {
-        if (normalizedPath.indexOf(child.name) !== -1) {
-          // 检查切割后的路径部分
-          result = child.key // 记录小类
-          break // 找到小类后退出循环
+      if (type.children) {
+        for (const child of type.children) {
+          if (normalizedPath.indexOf(child.name) !== -1) {
+            // 检查切割后的路径部分
+            result = child.key // 记录小类
+            break // 找到小类后退出循环
+          }
         }
       }
     }
@@ -181,4 +179,10 @@ export const getParsePathObject = (path: string) => {
   console.log('=======getParsePathObject:', path)
 
   return parse(path)
+}
+
+interface PathType {
+  parent: string;
+  children?: Array<{ name: string; key: string }> | null;
+  key?: string;
 }

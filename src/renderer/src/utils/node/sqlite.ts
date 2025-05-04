@@ -1,3 +1,4 @@
+// @ts-ignore
 import Database from 'better-sqlite3'
 import { getAppPath } from './path'
 
@@ -9,6 +10,12 @@ interface PaginationOptions {
   pageSize: number
   orderBy?: string
   orderDirection?: string
+}
+
+interface FilteredPaginationOptions {
+  filter: string
+  limit: number
+  offset: number
 }
 
 class GamesDocDatabase {
@@ -68,13 +75,13 @@ class GamesDocDatabase {
   }
 
   public insert(data: any[]) {
-    const errorLog = []
+    const errorLog = [] as string[]
     data.forEach((element) => {
       try {
         this.insertData(element)
-      } catch (e) {
+      } catch (e: any) {
         console.error(e)
-        errorLog.push(`${element}: ${e}`)
+        errorLog.push(`${element}: ${e.message}`)
       }
     })
     return errorLog
@@ -113,7 +120,7 @@ class GamesDocDatabase {
   }
 
   public update(data: any[]) {
-    const errorLog = []
+    const errorLog = [] as string[]
     data.forEach((element) => {
       try {
         this.updateData(element)
@@ -177,7 +184,7 @@ class GamesDocDatabase {
 
   // todo: 添加搜索功能再做
   public getFilteredPaginatedData(
-    { filter, limit, offset } = { filter: string, limit: number, offset: number }
+    { filter, limit, offset }: FilteredPaginationOptions = { filter: '', limit: 10, offset: 0 }
   ) {
     const query = this.db.prepare(`
       SELECT * FROM ${GAMES_DOC_TABLE}
@@ -202,8 +209,8 @@ class GamesDocDatabase {
       throw new Error('至少需要输入一个条件: gameName 或 steamId')
     }
 
-    const conditions = []
-    const params = []
+    const conditions: string[] = []
+    const params: string[] = []
 
     if (gameName) {
       conditions.push('gameName LIKE ?')
