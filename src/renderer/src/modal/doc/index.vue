@@ -168,24 +168,20 @@
 	}
 
 	const onChangeSearchGameName = async (e: Event) => {
-		if (unref(isUpdate) || !unref(gameName)) {
+		if (unref(isUpdate)) return
+		if (!unref(gameName)) {
 			message.warn('请输入游戏名或关键字!')
 			return
 		}
 
-		const rtx = await callNodeAsync({
-			modName: 'localGamesDocDatabase',
-			functionName: 'queryHasGameDoc',
-			data: unref(gameName)
-		})
-
-		if (rtx.length === 0) {
+		const games = await searchGameDoc(unref(gameName))
+		if (games.length === 0) {
 			message.warn('未找到游戏文档!')
 			return
 		}
 
-		repetitionGame.value = rtx
-		console.log('onChangeSearchGameName:', unref(gameName), rtx)
+		repetitionGame.value = games[0]
+		console.log('onChangeSearchGameName:', unref(gameName), repetitionGame.value)
 
 		message.warning(`存档${unref(gameName)}已存在！`)
 	}
