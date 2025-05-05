@@ -13,9 +13,14 @@ interface PaginationOptions {
 }
 
 interface FilteredPaginationOptions {
-  filter: string
-  limit: number
-  offset: number
+  filter: {
+    field: string
+    value: string
+  }
+  page: number
+  pageSize: number
+  orderBy?: string
+  orderDirection?: 'ASC' | 'DESC'
 }
 
 class GamesDocDatabase {
@@ -182,16 +187,53 @@ class GamesDocDatabase {
     }
   }
 
-  // todo: 添加搜索功能再做
-  public getFilteredPaginatedData(
-    { filter, limit, offset }: FilteredPaginationOptions = { filter: '', limit: 10, offset: 0 }
-  ) {
+  public getFilteredPaginatedData({
+    filter,
+    page = 1,
+    pageSize = 10,
+    orderBy = 'gameName',
+    orderDirection = 'ASC'
+  }: FilteredPaginationOptions) {
+    const validOrderBys = ['gameName', 'gameDocDir', 'steamId', 'nickName']
+    if (!validOrderBys.includes(orderBy)) {
+      orderBy = 'gameName'
+    }
+
+    const offset = (page - 1) * pageSize
+    let whereClauses = '1=1'
+    let searchParams: string[] = []
+
+    // 只有当filter有值且value不为空时才进行搜索
+    if (filter?.field && filter?.value) {
+      if (filter.field === 'gameName') {
+        whereClauses = 'gameName LIKE ? OR nickName LIKE ?'
+        searchParams = [`%${filter.value}%`, `%${filter.value}%`]
+      } else if (filter.field === 'steamId') {
+        whereClauses = 'steamId LIKE ?'
+        searchParams = [`%${filter.value}%`]
+      }
+    }
+
+    const countQuery = this.db.prepare(`
+      SELECT COUNT(*) as count
+      FROM ${GAMES_DOC_TABLE}
+      WHERE ${whereClauses}
+    `)
+    const totalCount = countQuery.get(...searchParams).count
+
     const query = this.db.prepare(`
       SELECT * FROM ${GAMES_DOC_TABLE}
-      WHERE gameName LIKE ?
+      WHERE ${whereClauses}
+      ORDER BY ${orderBy} ${orderDirection}
       LIMIT ? OFFSET ?
     `)
-    return query.all(`%${filter}%`, limit, offset)
+
+    const currentPageData = query.all(...searchParams, pageSize, offset)
+
+    return {
+      totalCount,
+      currentPageData
+    }
   }
 
   public queryGameInfo(gameDocDir: string) {
