@@ -60,9 +60,9 @@ export function useLocalGamesDoc() {
 				data: item
 			})
 		} catch (error) {
-      console.error(error)
+			console.error(error)
 			return null
-    }
+		}
 	}
 
 	const updateGameDoc = async (item: GameDocItem) => {
@@ -71,6 +71,19 @@ export function useLocalGamesDoc() {
 				modName: 'localGamesDocDatabase',
 				functionName: 'updateData',
 				data: item
+			})
+		} catch (error) {
+			console.error(error)
+			return null
+		}
+	}
+
+	const removeGameDoc = async (gameDocDir: string) => {
+		try {
+			return await callNodeAsync({
+				modName: 'localGamesDocDatabase',
+				functionName: 'deleteGameDoc',
+				data: gameDocDir
 			})
 		} catch (error) {
 			console.error(error)
@@ -113,8 +126,9 @@ export function useLocalGamesDoc() {
 		searchType,
 		searchText,
 		fetchPageData,
-    createGameDoc,
+		createGameDoc,
 		updateGameDoc,
+		removeGameDoc,
 		queryGameDoc,
 		searchGameDoc
 	}

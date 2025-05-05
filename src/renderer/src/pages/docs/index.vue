@@ -52,7 +52,8 @@
 						</button>
 
             <button @click="onUpdate(record)" class="absolute px-4 py-2 text-white bg-blue-500 rounded top-2 right-2 hover:bg-blue-600">修改</button>
-					</div>
+            <button @click="onDeleteGamesDoc(record.gameDocDir)" class="absolute px-4 py-2 text-white bg-red-500 rounded bottom-2 right-2 hover:bg-red-600">删除</button>
+          </div>
 				</div>
 			</ScrollArea>
       <a-empty class="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" v-if="GameDocItems.length === 0" :description="null" />
@@ -77,7 +78,7 @@
 	import { ScrollArea } from '@/components/ui/scroll-area'
 	import { Input } from '@/components/ui/input'
 	import { Button } from '@/components/ui/button'
-	import { message, InputGroup as AInputGroup, Select as ASelect, Input as AInput, Empty as AEmpty } from 'ant-design-vue'
+	import { message, InputGroup as AInputGroup, Select as ASelect, Input as AInput, Empty as AEmpty, Modal } from 'ant-design-vue'
 	import { PlusOutlined, CloseOutlined, FormOutlined } from '@ant-design/icons-vue'
 	import { Search, Plus, FolderSearch, Menu, ArrowDownAZ, RefreshCw } from 'lucide-vue-next'
 	import { ref, onMounted, onBeforeUnmount, defineComponent, inject, computed, unref, Ref, watch } from 'vue'
@@ -93,7 +94,7 @@
 
 	const { onModalOpen, onSetDocForm, setUpdateStatus } = useDocFormStoreWhitOut()
 	const { addGame, searchGame } = useGames()
-	const { searchType, searchText, loading, total, currentPage, pageSize, tableList, fetchPageData } = useLocalGamesDoc()
+	const { searchType, searchText, loading, total, currentPage, pageSize, tableList, fetchPageData, removeGameDoc } = useLocalGamesDoc()
 
 	const onAddGameDocToMyLib = async (item: GameDocItem) => {
 		const hasGame = await searchGame(item.gameDocDir)
@@ -120,7 +121,24 @@
     onModalOpen()
   }
 
-	const onDel = async (gameDocDir: string) => {}
+	const onDeleteGamesDoc = async (gameDocDir: string) => {
+		Modal.confirm({
+			title: '确认删除',
+			content: '确定要删除这个游戏文档吗？',
+			okText: '确定',
+			cancelText: '取消',
+      centered: true,
+			async onOk() {
+				const result = await removeGameDoc(gameDocDir)
+				if (result && result.success) {
+					message.success('删除成功')
+					fetchPageData()
+				} else {
+					message.error(result?.error || '删除失败')
+				}
+			}
+		})
+	}
 
 	onMounted(() => {
 		fetchPageData()
