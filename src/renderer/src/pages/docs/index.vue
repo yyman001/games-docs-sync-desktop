@@ -43,13 +43,15 @@
 							class="w-full h-auto horizontalCover" />
 					</div>
 
-					<div class="w-3/5 p-4">
+					<div class="relative w-3/5 p-4">
 						<h2 class="mb-4 text-xl text-black">{{ record.gameName }}</h2>
 						<button
 							class="px-4 py-2 text-white bg-green-500 rounded hover:bg-green-600"
 							@click="onAddGameDocToMyLib(record)">
 							添加到我的游戏库
 						</button>
+
+            <button @click="onUpdate(record)" class="absolute px-4 py-2 text-white bg-blue-500 rounded top-2 right-2 hover:bg-blue-600">修改</button>
 					</div>
 				</div>
 			</ScrollArea>
@@ -89,7 +91,7 @@
 	import { useGames } from '../games/db'
 	import { useLocalGamesDoc } from '@/hooks/useLocalGamesDoc'
 
-	const { onModalOpen } = useDocFormStoreWhitOut()
+	const { onModalOpen, onSetDocForm, setUpdateStatus } = useDocFormStoreWhitOut()
 	const { addGame, searchGame } = useGames()
 	const { searchType, searchText, loading, total, currentPage, pageSize, tableList, fetchPageData } = useLocalGamesDoc()
 
@@ -112,7 +114,11 @@
 		message.error('添加失败!')
 	}
 
-	const onUpdate = async (record: any) => {}
+	const onUpdate = async (record: any) => {
+    setUpdateStatus(true)
+    onSetDocForm(record)
+    onModalOpen()
+  }
 
 	const onDel = async (gameDocDir: string) => {}
 

@@ -43,6 +43,11 @@ export const useDocForm = defineStore('doc-form', () => {
       functionName: 'getGameDocType',
       data: gameDocPath.value
     })
+    gameDocFullPath.value = callNodesync({
+      modName: 'path',
+      functionName: 'getGameDocPath',
+      data: gameDocPath.value
+    })
   }
 
   const onInitDocForm = () => {
